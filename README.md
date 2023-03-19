@@ -3,3 +3,4 @@
 Sovelluksen vaatimusmäärittely ja SQLskeema löytyvät:
 
 - [Vaatimusmäärittely](./documentation/vaatimusmaarittely.md)
+
