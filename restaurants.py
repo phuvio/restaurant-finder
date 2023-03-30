@@ -3,9 +3,11 @@ from sqlalchemy.sql import text
 
 
 def get_all_restaurants():
-    sql = text("""SELECT id, name, location
-                  FROM restaurants
-                  WHERE visible=1""")
+    sql = text("""SELECT R.id, R.name, R.location, AVG(C.stars)::numeric(10,0) AS avg_stars
+                  FROM restaurants R
+                  LEFT JOIN comments C ON R.id=C.restaurant_id
+                  WHERE visible=1
+                  GROUP BY R.id, R.name""")
     return db.session.execute(sql).fetchall()
 
 def get_restaurant_stars(restaurant_id):
@@ -16,10 +18,19 @@ def get_restaurant_stars(restaurant_id):
     return db.session.execute(sql, {"id":restaurant_id}).fetchone()
 
 def get_restaurant_comments(restaurant_id):
-    sql = text("""SELECT C.id, C.stars, C.comment
-                  FROM restaurants R, comments C
-                  WHERE R.id=:id AND R.visible=1 AND R.id=C.restaurant_id""")
+    sql = text("""SELECT C.id AS comment_id, C.stars, C.comment, U.username AS username
+                  FROM comments C
+                  LEFT JOIN users U ON C.user_id=U.id
+                  WHERE C.restaurant_id=:restaurant_id""")
     return db.session.execute(sql, {"id":restaurant_id}).fetchall()
+
+def get_restaurant_basic_info(restaurant_id):
+    sql = text("""SELECT R.id, R.name, AVG(C.stars)::numeric(10,0) AS avg_stars
+                  FROM restaurants R
+                  LEFT JOIN comments C ON R.id=C.restaurant_id
+                  WHERE R.id=:restaurant_id AND R.visible=1
+                  GROUP BY R.id, R.name""")
+    return db.session.execute(sql, {"restaurant_id":restaurant_id}).fetchone()
 
 def get_restaurant_extra_info(restaurant_id):
     sql = text("""SELECT I.key, I.value,
@@ -44,15 +55,20 @@ def change_restaurant_visibility(restaurant_id, visible):
     db.session.commit()
 
 def get_restaurants_in_group(group_id):
-    sql = text("""SELECT R.id, R.name
-                  FROM restaurants R, restaurantsingroups G
-                  WHERE R.id=G.restaurant_id AND G.group_id=:group_id AND R.visible=1""")
+    sql = text("""SELECT R.id, R.name, AVG(C.stars)::numeric(10,0) AS avg_stars
+                  FROM restaurantsingroups G
+                  INNER JOIN restaurants R ON G.restaurant_id=R.id
+                  INNER JOIN  comments C ON R.id=C.restaurant_id
+                  WHERE R.visible=1 AND G.group_id=:group_id
+                  GROUP BY G.group_id, R.id, R.name""")
     return db.session.execute(sql, {"group_id":group_id}).fetchall()
 
 def get_restaurants_by_text(search_string):
-    sql = text("""SELECT R.id, R.name
-                  FROM restaurants R, 
-                  LEFT JOIN restaurantinformation I On R.id=I.restaurant_id
+    sql = text("""SELECT R.id, R.name, AVG(C.stars)::numeric(10,0) AS avg_stars
+                  FROM restaurants R 
+                  LEFT JOIN restaurantinformation I ON R.id=I.restaurant_id
+                  LEFT JOIN comments C ON R.id=C.restaurant_id
                   WHERE R.visible=1 AND 
-                  (R.name like '%' || :search_string '%' OR i.value like '%' || :search_string '%')""")
+                  (R.name LIKE '%' || :search_string || '%' OR I.value LIKE '%' || :search_string || '%')
+                  GROUP BY R.id""")
     return db.session.execute(sql, {"search_string":search_string}).fetchall()
