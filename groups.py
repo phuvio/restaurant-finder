@@ -8,6 +8,12 @@ def get_all_groups():
                   WHERE visible=1""")
     return db.session.execute(sql).fetchall()
 
+def find_group(name):
+    sql = text("""SELECT name
+                  FROM groups
+                  WHERE name=:name""")
+    return db.session.execute(sql, {"name":name}).fetchone()[0]
+
 def add_group(name):
     sql = text("""INSERT INTO groups (name, visible)
                   VALUES (:name, 1)
