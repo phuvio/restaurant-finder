@@ -33,7 +33,7 @@ def add_restaurant(name, location):
                   RETURNING id""")
     return db.session.execute(sql, {"name":name, "location":location}).fetchone()[0]
 
-def remove_or_restore_restaurant(restaurant_id, visible):
+def change_restaurant_visibility(restaurant_id, visible):
     if visible == 1:
         visible = 0
     else:
@@ -49,8 +49,10 @@ def get_restaurants_in_group(group_id):
                   WHERE R.id=G.restaurant_id AND G.group_id=:group_id AND R.visible=1""")
     return db.session.execute(sql, {"group_id":group_id}).fetchall()
 
-def get_restaurants_by_text(text):
+def get_restaurants_by_text(search_string):
     sql = text("""SELECT R.id, R.name
-                  FROM restaurants R, restaurantinformation I
-                  WHERE R.id=I.restaurant_id AND R.visible=1 AND """)
-    pass
+                  FROM restaurants R, 
+                  LEFT JOIN restaurantinformation I On R.id=I.restaurant_id
+                  WHERE R.visible=1 AND 
+                  (R.name like '%' || :search_string '%' OR i.value like '%' || :search_string '%')""")
+    return db.session.execute(sql, {"search_string":search_string}).fetchall()
