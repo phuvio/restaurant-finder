@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    Lisää kartta
+
+    {% for restaurant in restaurants %}
+        <p><a href="/restaurant/{{ restaurant.id }}">{{ restaurant.name }}</a>
+        {{ restaurant.avg_stars }} tähteä</p>
+    {% endfor %}
+
+    <h2>Hae ravintolaa hakusanalla</h2>
+
+    <form action="/restaurants" method="post">
+        Haettava teksti: 
+        <br>
+        <input type="text" name="search_string" minlength="1" maxlength="20">
+        <p>
+        <input type="submit" name="action" value="Hae">
+    </form>
+
+    <h2>Hae ravintolaa ryhmästä</h2>
+
+    <form action="/restaurants" method="post">
+        <select name="select_group" method="post">
+            <option value="">-- Valitse ryhmä --</option>
+            {% for group in dropdown %}
+                <option value="{{ group.id }}">{{ group.name }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" name="action" value="Hae ryhmää">
+    </form>
+
+    {% if found_restaurants %}
+        <h2>Löydetyt ravintolat</h2>
+        {% for found in found_restaurants %}
+            <p>{{ found.avg_stars }} {{ found.name }}</p>
+        {% endfor %}
+    {% endif %}
+
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+
+{% endblock %}
