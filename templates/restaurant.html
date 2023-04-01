@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <h2>{{ name }}</h2>
+
+    Tähtiä {{ stars }}
+
+    <br>
+
+    {% if description %}
+        {{ description }}
+    {% endif %}
+
+    <br>
+
+    {% for info in information %}
+        <h3>{{ info.key }}</h3>
+        {{ info.value }}
+    {% endfor %}
+
+    <h3>Arvosteluja</h3>
+
+    {% for comment in comments %}
+        <p>{{ comment.username }}: {{ comment.stars }} {{ comment.comment }} 
+    {% endfor %}
+
+    <br>
+
+    <a href="/restaurants">Palaa takaisin</a>
+
+{% endblock %}
