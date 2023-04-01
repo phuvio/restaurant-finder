@@ -2,6 +2,7 @@ CREATE TABLE restaurants (
     id SERIAL PRIMARY KEY,
     name VARCHAR (50) NOT NULL,
     location POINT NOT NULL,
+    description VARCHAR(500),
     visible INTEGER NOT NULL
 );
 
