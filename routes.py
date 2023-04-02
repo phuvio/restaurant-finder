@@ -4,36 +4,18 @@ from app import app
 import restaurants
 import groups
 import users
+import map
 
 
 @app.route("/")
 def index():
-    dropdown = groups.get_all_groups()
-    return render_template("restaurants.html", restaurants=restaurants.get_all_restaurants(),
-                                               dropdown=dropdown)
-@app.route("/register")
-def register():
-    return render_template("register.html")
+    return redirect("/restaurants")
 
 @app.route("/restaurants", methods=["GET", "POST"])
 def show_restaurants():
     all_restaurants=restaurants.get_all_restaurants()
 
-    markers = []
-
-    for place in all_restaurants:
-        marker = {}
-        marker["lat"] = place.latitude
-        marker["lng"] = place.longitude
-        marker["label"] = place.name
-        markers.append(marker)
-
-    mymap = Map(
-        identifier="map",
-        lat=60.169857,
-        lng=24.938379,
-        markers=markers
-    )
+    mymap = map.create_map()
 
     dropdown = groups.get_all_groups()
 
@@ -89,3 +71,32 @@ def login():
         if not users.login(username, password):
             return render_template("login.html", error="Väärä tunnus tai salasana")
         return redirect("/")
+    
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "GET":
+        return render_template("register.html")
+    
+    if request.method == "POST":
+        username = request.form["username"]
+        if len(username) < 3 or len(username) > 20:
+            return render_template("register.html", error="Tunnuksen tulee olla 3-20 merkkiä")
+        
+        password1 = request.form["password1"]
+        password2 = request.form["password2"]
+        if password1 != password2:
+            return render_template("register.html", error="Salasanat eivät ole samat")
+        if password1 == "":
+            return render_template("register.html", error="Salasana on tyhjä")
+        if len(password1) > 50:
+            return render_template("register.html", error="Salasana on liian pitkä")
+        
+        if not users.register(username, password1, 0):
+            return render_template("register.html", error="Rekisteröinti ei onnistunut")
+        
+        return redirect("/")
+
+@app.route("/logout")
+def logout():
+    users.logout()
+    return redirect("/login")
