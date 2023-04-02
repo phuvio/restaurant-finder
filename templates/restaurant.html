@@ -26,6 +26,22 @@
 
     <br>
 
+    <form action="/restaurant/{{ id }}" method="post">
+        Anna arvosana: <br>
+        <select name="stars">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+        <br>
+        Kommentti: <br>
+        <textarea name="comment" rows="3" cols="40" maxlength="500"></textarea>
+        <p>
+        <input type="submit" value="Luo arvostelu">
+    </form>
+
     <a href="/restaurants">Palaa takaisin</a>
 
 {% endblock %}
