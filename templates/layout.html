@@ -1,6 +1,14 @@
 <!DOCTYPE html>
-<title>Etsi ravintola</title>
+<head>
+    <title>Etsi ravintola</title>
+</head>
 <h1>Etsi ravintola</h1>
 <hr>
+{% if session.user_id %}
+
+    Olet kirjautunut sisään nimellä <b>{{ session.user_username }}</b>. <a href="/logout">Kirjaudu ulos</a>
+
+{% endif %}
+
 {% block content %}
 {% endblock %}
