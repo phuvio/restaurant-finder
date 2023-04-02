@@ -13,6 +13,7 @@ flask-googlemaps==0.4.1
 Flask-SQLAlchemy==3.0.3
 ghp-import==2.1.0
 greenlet==2.0.2
+gunicorn==20.1.0
 htmlmin==0.1.12
 identify==2.5.22
 idna==3.4
