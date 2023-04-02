@@ -9,7 +9,7 @@ CREATE TABLE restaurants (
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR (20) UNIQUE NOT NULL,
-    password VARCHAR (50) NOT NULL,
+    password VARCHAR NOT NULL,
     role INTEGER
 );
 
