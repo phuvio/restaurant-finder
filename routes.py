@@ -1,8 +1,9 @@
-from flask import render_template, request, redirect
+from flask import render_template, request, redirect, url_for
 from flask_googlemaps import Map
 from app import app
 import restaurants
 import groups
+import comments
 import users
 import map
 
@@ -47,17 +48,35 @@ def show_restaurants():
                                                dropdown=dropdown,
                                                mymap=mymap)
 
-@app.route("/restaurant/<int:id>")
+@app.route("/restaurant/<int:id>", methods=["GET", "POST"])
 def restaurant(id):
     id, name, avg_stars, description = restaurants.get_restaurant_basic_info(id)
     information = restaurants.get_restaurant_extra_info(id)
-    comments = restaurants.get_restaurant_comments(id)
-    return render_template("restaurant.html", id=id,
-                                              name=name,
-                                              stars=avg_stars,
-                                              description=description,
-                                              comments=comments,
-                                              information=information)
+    restaurant_comments = restaurants.get_restaurant_comments(id)
+    if request.method == "GET":
+        return render_template("restaurant.html", id=id,
+                                                  name=name,
+                                                  stars=avg_stars,
+                                                  description=description,
+                                                  comments=restaurant_comments,
+                                                  information=information)
+    
+    if request.method == "POST":
+        stars = request.form["stars"]
+        if stars == None or stars == "":
+            return render_template("restaurant.html",
+                                   id=id,
+                                   name=name,
+                                   stars=avg_stars,
+                                   description=description,
+                                   comments=restaurant_comments,
+                                   information=information)
+
+        restaurant_comment = request.form["comment"]
+        restaurant_id = id
+        user_id = users.user_id()
+        comments.add_comment(restaurant_id, user_id, stars, restaurant_comment)
+        return redirect(url_for("restaurant", id=restaurant_id))
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
