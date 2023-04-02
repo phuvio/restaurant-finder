@@ -7,7 +7,7 @@ def add_comment(restaurant_id, user_id, stars, comment):
                   (restaurant_id, user_id, stars, comment)
                   VALUES 
                   (:restaurant_id, :user_id, :stars, :comment)""")
-    db.session.execute(sql, {"restraurant_id":restaurant_id,
+    db.session.execute(sql, {"restaurant_id":restaurant_id,
                              "user_id":user_id,
                              "stars":stars,
                              "comment":comment})
