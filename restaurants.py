@@ -1,9 +1,10 @@
-from db import db
 from sqlalchemy.sql import text
+from db import db
 
 
 def get_all_restaurants():
-    sql = text("""SELECT R.id, R.name, R.location, AVG(C.stars)::numeric(10,1) AS avg_stars
+    sql = text("""SELECT R.id, R.name, R.location[0] AS latitude, R.location[1] AS longitude,
+                  AVG(C.stars)::numeric(10,1) AS avg_stars
                   FROM restaurants R
                   LEFT JOIN comments C ON R.id=C.restaurant_id
                   WHERE visible=1
@@ -21,7 +22,9 @@ def get_restaurant_comments(restaurant_id):
     sql = text("""SELECT C.id AS comment_id, C.stars, C.comment, U.username AS username
                   FROM comments C
                   LEFT JOIN users U ON C.user_id=U.id
-                  WHERE C.restaurant_id=:restaurant_id""")
+                  WHERE C.restaurant_id=:restaurant_id
+                  ORDER BY C.id DESC
+                  LIMIT 10""")
     return db.session.execute(sql, {"restaurant_id":restaurant_id}).fetchall()
 
 def get_restaurant_basic_info(restaurant_id):
@@ -35,7 +38,8 @@ def get_restaurant_basic_info(restaurant_id):
 def get_restaurant_extra_info(restaurant_id):
     sql = text("""SELECT I.key, I.value
                   FROM restaurants R, restaurantinformation I
-                  WHERE R.id=:restaurant_id AND R.visible=1 AND I.visible=1 AND R.id=I.restaurant_id""")
+                  WHERE R.id=:restaurant_id AND R.visible=1 AND I.visible=1
+                  AND R.id=I.restaurant_id""")
     return db.session.execute(sql, {"restaurant_id":restaurant_id}).fetchall()
 
 def add_restaurant(name, location):
