@@ -24,7 +24,7 @@ CREATE TABLE comments (
 CREATE TABLE restaurantinformation (
     id SERIAL PRIMARY KEY,
     restaurant_id INTEGER REFERENCES restaurants,
-    key VARCHAR (50) UNIQUE NOT NULL,
+    key VARCHAR (50) NOT NULL,
     value VARCHAR (500) NOT NULL,
     visible INTEGER NOT NULL
 );
