@@ -17,6 +17,7 @@ Ohjelmaan voi luoda uusia käyttäjiä ja kirjautua sisään. Etusivulla näkyy 
 - tietosuojaominaisuudet puuttuvat (sivuilla voi siirtyä myös ilman kirjautumista)
 - etusivun kartta ei näy (siksi ravintolat ylhäällä listana)
 - hakusana- tai ryhmähaku tuottaa luettelon, mutta luettelon ravintoloiden nimet eivät ole linkkejä
+- sivun ulkoasu on tekemättä
 - pääkäyttäjän ominaisuudet puuttuvat
   - ravintolan lisääminen
   - ravintolan tietojen muokkaaminen
