@@ -1,5 +1,5 @@
-from db import db
 from sqlalchemy.sql import text
+from db import db
 
 
 def get_all_groups():
