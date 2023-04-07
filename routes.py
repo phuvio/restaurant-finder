@@ -15,18 +15,22 @@ def index():
 def show_restaurants():
     all_restaurants=restaurants.get_all_restaurants()
 
+    mymap = map.create_map()
+
     dropdown = groups.get_all_groups()
 
     if request.method == "GET":
         return render_template("restaurants.html", restaurants=all_restaurants,
-                                                   dropdown=dropdown,)
+                                                   dropdown=dropdown,
+                                                   mymap=mymap)
 
     if request.form["action"] == "Hae ryhmää":
         group_id = request.form.get("select_group")
         if group_id == "":
             return render_template("restaurants.html", restaurants=all_restaurants,
                                                        error="Valitse ryhmä.",
-                                                       dropdown=dropdown,)
+                                                       dropdown=dropdown,
+                                                       mymap=mymap)
         found_restaurants = restaurants.get_restaurants_in_group(group_id)
     else:
         search_string = request.form["search_string"]
@@ -40,7 +44,8 @@ def show_restaurants():
 
     return render_template("restaurants.html", restaurants=all_restaurants,
                                                found_restaurants=found_restaurants,
-                                               dropdown=dropdown,)
+                                               dropdown=dropdown,
+                                               mymap=mymap)
 
 @app.route("/restaurant/<int:id>", methods=["GET", "POST"])
 def restaurant(id):

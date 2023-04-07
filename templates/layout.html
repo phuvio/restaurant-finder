@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <head>
     <title>Etsi ravintola</title>
+
+    {% if mymap %}
+        {{"decoupled-map"|googlemap_js(37.4419, -122.1419)}} {{mymap.js}}
+    {% endif %}
+
 </head>
 <h1>Etsi ravintola</h1>
 <hr>

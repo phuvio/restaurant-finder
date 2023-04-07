@@ -2,11 +2,7 @@
 {% block content %}
 
     {% if mymap %}
-
-        {{"decoupled-map"|googlemap_js(37.4419, -122.1419)}} {{mymap.js}}
-
         {{ mymap.html }}
-
     {% endif %}
     
     {% for restaurant in restaurants %}

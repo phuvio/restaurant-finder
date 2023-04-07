@@ -14,7 +14,9 @@ def create_map():
         identifier="mymap",
         lat=60.169857,
         lng=24.938379,
-        markers=markers
+        markers=markers,
+        zoom=13,
+        zoom_control=True
     )
 
     return mymap
