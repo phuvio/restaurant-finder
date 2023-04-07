@@ -1,15 +1,12 @@
 {% extends "layout.html" %}
 {% block content %}
 
-    {% if mymap %}
-        {{ mymap.html }}
-    {% endif %}
+    <div class="google-map">
+        {% if mymap %}
+            {{ mymap.html }}
+        {% endif %}
+    </div>
     
-    {% for restaurant in restaurants %}
-        <p><a href="/restaurant/{{ restaurant.id }}">{{ restaurant.name }}</a>
-        {{ restaurant.avg_stars }} tähteä</p>
-    {% endfor %}
-
     <h2>Hae ravintolaa hakusanalla</h2>
 
     <form action="/restaurants" method="post">
