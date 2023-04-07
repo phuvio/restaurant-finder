@@ -10,13 +10,12 @@ Ohjelmaa voi testata: [Löydä ravintola](https://tsoha2023-restaurant-finder.fl
 
 Ohjelmaan on rakennettu perusominaisuudet. Pääkäyttäjän ominaisuudet puuttuvat, joten uusia ravintoloita ei voi lisätä eikä nykyisiä hallinnoida.
 
-Ohjelmaan voi luoda uusia käyttäjiä ja kirjautua sisään. Etusivulla näkyy luettelo tietokantaan luoduista ravintoloista. Klikkaamalla ravintolan nimeä, saa näkyviin ravintolan tiedot. Sivulla kirjautunut käyttäjä voi jättää arvion ravintolasta.
+Ohjelmaan voi luoda uusia käyttäjiä ja kirjautua sisään. 
+
+Etusivulla on kartta, jossa tietokantaan luodut ravintolat näkyvät merkkeinä. Merkissä lukee kyseisen ravintolan nimi. Klikkaamalla merkkiä, sen yläpuolelle ilmestyy infolaatikko, jossa on ravintolan tähtien määrä sekä linkki ravintolan tietosivulle. Ravintolan sivulla näkyy ravintolan tiedot ja kirjautunut käyttäjä voi jättää arvion ravintolasta.
 
 ### Tunnetut puutteet
 
-- tietosuojaominaisuudet puuttuvat (sivuilla voi siirtyä myös ilman kirjautumista)
-- etusivun kartta ei näy (siksi ravintolat ylhäällä listana)
-- hakusana- tai ryhmähaku tuottaa luettelon, mutta luettelon ravintoloiden nimet eivät ole linkkejä
 - sivun ulkoasu on tekemättä
 - pääkäyttäjän ominaisuudet puuttuvat
   - ravintolan lisääminen
