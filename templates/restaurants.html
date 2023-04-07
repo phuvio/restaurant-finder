@@ -22,7 +22,6 @@
         <input type="text" name="search_string" minlength="1" maxlength="20">
         <p>
         <input type="submit" name="action" value="Hae">
-        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     </form>
 
     <h2>Hae ravintolaa ryhmästä</h2>
@@ -35,7 +34,6 @@
             {% endfor %}
         </select>
         <input type="submit" name="action" value="Hae ryhmää">
-        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     </form>
 
     {% if found_restaurants %}

@@ -1,5 +1,4 @@
 from flask import render_template, request, redirect, url_for
-from flask_googlemaps import Map
 from app import app
 import restaurants
 import groups
@@ -16,24 +15,18 @@ def index():
 def show_restaurants():
     all_restaurants=restaurants.get_all_restaurants()
 
-    mymap = map.create_map()
-
     dropdown = groups.get_all_groups()
 
     if request.method == "GET":
         return render_template("restaurants.html", restaurants=all_restaurants,
-                                                   dropdown=dropdown,
-                                                   mymap=mymap)
-
-    users.check_csrf()
+                                                   dropdown=dropdown,)
 
     if request.form["action"] == "Hae ryhmää":
         group_id = request.form.get("select_group")
         if group_id == "":
             return render_template("restaurants.html", restaurants=all_restaurants,
                                                        error="Valitse ryhmä.",
-                                                       dropdown=dropdown,
-                                                       mymap=mymap)
+                                                       dropdown=dropdown,)
         found_restaurants = restaurants.get_restaurants_in_group(group_id)
     else:
         search_string = request.form["search_string"]
@@ -47,8 +40,7 @@ def show_restaurants():
 
     return render_template("restaurants.html", restaurants=all_restaurants,
                                                found_restaurants=found_restaurants,
-                                               dropdown=dropdown,
-                                               mymap=mymap)
+                                               dropdown=dropdown,)
 
 @app.route("/restaurant/<int:id>", methods=["GET", "POST"])
 def restaurant(id):
