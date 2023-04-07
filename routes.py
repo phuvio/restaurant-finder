@@ -25,6 +25,8 @@ def show_restaurants():
                                                    dropdown=dropdown,
                                                    mymap=mymap)
 
+    users.check_csrf()
+
     if request.form["action"] == "Hae ryhmää":
         group_id = request.form.get("select_group")
         if group_id == "":
@@ -62,6 +64,8 @@ def restaurant(id):
                                                   information=information)
     
     if request.method == "POST":
+        users.check_csrf()
+        
         stars = request.form["stars"]
         if stars == None or stars == "":
             return render_template("restaurant.html",
@@ -107,6 +111,8 @@ def register():
             return render_template("register.html", error="Salasanat eivät ole samat")
         if password1 == "":
             return render_template("register.html", error="Salasana on tyhjä")
+        if len(password1) < 3:
+            return render_template("register.html", error="Salasanan pitää olla vähintään 3 merkkiä pitkä")
         if len(password1) > 50:
             return render_template("register.html", error="Salasana on liian pitkä")
         
