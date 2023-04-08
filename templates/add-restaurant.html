@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <h2>Lisää ravintola</h2>
+
+    <form action="/add-restaurant" method="post">
+        Nimi: <br><input type="text" name="restaurant_name">
+        <br>
+        Sijainti:<br>
+        Leveyspiiri: <input type="text" name="latitude" placeholder="esim. 60.170897"> <br>
+        Pituuspiiri: <input type="text" name="longitude" placeholder="esim. 24.941421">
+        <br>
+        Ravintolan esittely: <br>
+        <textarea name="description" rows="3" cols="40" maxlength="500"></textarea>
+        <p>
+        <input type="submit" value="Luo ravintola">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    </form>
+
+    {{ error }}
+    
+    <br>
+    
+    <a href="/restaurants">Takaisin pääsivulle</a>
+
+{% endblock %}
