@@ -1,11 +1,14 @@
 from flask import render_template, request, redirect, url_for
 from app import app
+import re
 import restaurants
 import groups
 import comments
 import users
 import map
 
+
+regex = '[+-]?[0-9]+\.[0-9]+'
 
 @app.route("/")
 def index():
@@ -41,6 +44,13 @@ def show_restaurants():
                                    dropdown=dropdown,
                                    mymap=mymap)
         found_restaurants = restaurants.get_restaurants_by_text(search_string)
+
+    if not found_restaurants:
+        return render_template("restaurants.html", restaurants=all_restaurants,
+                                                   found_restaurants=found_restaurants,
+                                                   dropdown=dropdown,
+                                                   mymap=mymap,
+                                                   error="Ravintoloita ei löytynyt")
 
     return render_template("restaurants.html", restaurants=all_restaurants,
                                                found_restaurants=found_restaurants,
@@ -122,3 +132,52 @@ def register():
 def logout():
     users.logout()
     return redirect("/login")
+
+@app.route("/admin")
+def admin():
+    return render_template("admin.html")
+
+
+@app.route("/add-restaurant", methods=["GET", "POST"])
+def add_restaurant():
+    users.require_role(0)
+    if request.method == "GET":
+        return render_template("add-restaurant.html")
+    
+    if request.method == "POST":
+        users.check_csrf()
+
+        restaurant_name = request.form["restaurant_name"]
+        if restaurant_name == "":
+            return render_template("add-restaurant.html", error="Ravintolan nimi ei voi olla tyhjä")
+        if len(restaurant_name) > 50:
+            return render_template("add-restaurant.html", error="Ravintolan nimi on liian pitkä")
+        
+        latitude = request.form["latitude"]
+        if latitude == "":
+            return render_template("add-restaurant.html", error="Leveyspiiri ei voi olla tyhjä")
+        try:
+            float(latitude)
+        except:
+            return render_template("add-restaurant.html", error="Leveyspiirin pitää olla numero")
+        if not 60 < float(latitude) < 70:
+            return render_template("add-restaurant.html", error="Suomen leveyspiirit ovat 60-70 välillä")
+        
+        longitude = request.form["longitude"]
+        if longitude == "":
+            return render_template("add-restaurant.html", error="Pituuspiiri ei voi olla tyhjä")
+        try:
+            float(longitude)
+        except:
+            return render_template("add-restaurant.html", error="Pituuspiirin pitää olla numero")
+        if not 22 < float(longitude) < 31:
+            return render_template("add-restaurant.html", error="Suomen pituuspiirit ovat 22-31 välillä")
+        
+        description = request.form["description"]
+        if len(description) > 500:
+            return render_template("add-restaurant.html", error="Ravintolan esittely on liian pitkä")
+
+        if not restaurants.add_restaurant(restaurant_name, latitude, longitude, description):
+            return render_template("add-restaurant.html", error="Tallennus ei onnistunut")
+
+        return render_template("add-restaurant.html", error="Tallennus onnistui")

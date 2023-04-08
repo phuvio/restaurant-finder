@@ -17,5 +17,9 @@
     Et ole kirjautunut sisään. <a href="/login">Kirjaudu sisään</a>
 {% endif %}
 
+{% if session.user_role == 0 %}
+    <a href="/admin">Ylläpito</a>
+{% endif %}
+
 {% block content %}
 {% endblock %}

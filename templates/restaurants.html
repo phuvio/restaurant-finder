@@ -32,7 +32,11 @@
     {% if found_restaurants %}
         <h2>Löydetyt ravintolat</h2>
         {% for found in found_restaurants %}
-            <p>{{ found.avg_stars }} <a href="/restaurant/{{ found.id }}">{{ found.name }}</a></p>
+            {% if found.avg_stars %}
+                <p>{{ found.avg_stars }} <a href="/restaurant/{{ found.id }}">{{ found.name }}</a></p>
+            {% else %}
+                <p><a href="/restaurant/{{ found.id }}">{{ found.name }}</a></p>
+            {% endif %}
         {% endfor %}
     {% endif %}
 

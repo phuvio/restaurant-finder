@@ -3,12 +3,13 @@ from db import db
 
 
 def get_all_restaurants():
-    sql = text("""SELECT R.id, R.name, R.location[0] AS latitude, R.location[1] AS longitude,
+    sql = text("""SELECT R.id, R.name, R.latitude, R.longitude,
                   AVG(C.stars)::numeric(10,1) AS avg_stars
                   FROM restaurants R
                   LEFT JOIN comments C ON R.id=C.restaurant_id
                   WHERE visible=1
-                  GROUP BY R.id, R.name""")
+                  GROUP BY R.id, R.name
+                  ORDER BY R.name""")
     return db.session.execute(sql).fetchall()
 
 def get_restaurant_stars(restaurant_id):
@@ -42,11 +43,14 @@ def get_restaurant_extra_info(restaurant_id):
                   AND R.id=I.restaurant_id""")
     return db.session.execute(sql, {"restaurant_id":restaurant_id}).fetchall()
 
-def add_restaurant(name, location):
-    sql = text("""INSERT INTO restaurants (name, location, visible)
-                  VALUES (:name, :location, 1)
+def add_restaurant(name, latitude, longitude, description):
+    print(name, latitude, longitude, description)
+    sql = text("""INSERT INTO restaurants (name, latitude, longitude, description, visible)
+                  VALUES (:name, :latitude, :longitude, :description, 1)
                   RETURNING id""")
-    return db.session.execute(sql, {"name":name, "location":location}).fetchone()[0]
+    id = db.session.execute(sql, {"name":name, "latitude":latitude, "longitude":longitude, "description":description}).fetchone()[0]
+    db.session.commit()
+    return id
 
 def change_restaurant_visibility(restaurant_id, visible):
     if visible == 1:
