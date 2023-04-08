@@ -12,7 +12,10 @@ def create_map():
         marker["lat"] = restaurant.latitude
         marker["lng"] = restaurant.longitude
         marker["label"] = restaurant.name
-        link = str(restaurant.avg_stars) + " <a href=/restaurant/" + str(restaurant.id) + ">" + restaurant.name + "</a>"
+        if restaurant.avg_stars:
+            link = str(restaurant.avg_stars) + " <a href=/restaurant/" + str(restaurant.id) + ">" + restaurant.name + "</a>"
+        else:
+            link = "<a href=/restaurant/" + str(restaurant.id) + ">" + restaurant.name + "</a>"
         marker["infobox"] = link
         markers.append(marker)
     
