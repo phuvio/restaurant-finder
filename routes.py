@@ -16,22 +16,18 @@ def index():
 
 @app.route("/restaurants", methods=["GET", "POST"])
 def show_restaurants():
-    all_restaurants=restaurants.get_all_restaurants()
-
     mymap = map.create_map()
 
     dropdown = groups.get_all_groups()
 
     if request.method == "GET":
-        return render_template("restaurants.html", restaurants=all_restaurants,
-                                                   dropdown=dropdown,
+        return render_template("restaurants.html", dropdown=dropdown,
                                                    mymap=mymap)
 
     if request.form["action"] == "Hae ryhmää":
         group_id = request.form.get("select_group")
         if group_id == "":
-            return render_template("restaurants.html", restaurants=all_restaurants,
-                                                       error="Valitse ryhmä.",
+            return render_template("restaurants.html", error="Valitse ryhmä.",
                                                        dropdown=dropdown,
                                                        mymap=mymap)
         found_restaurants = restaurants.get_restaurants_in_group(group_id)
@@ -39,21 +35,18 @@ def show_restaurants():
         search_string = request.form["search_string"].lower()
         if len(search_string) < 1 or len(search_string) > 20:
             return render_template("restaurants.html",
-                                   restaurants=all_restaurants,
                                    error="Hakusana voi olla 1-20 merkkiä pitkä.",
                                    dropdown=dropdown,
                                    mymap=mymap)
         found_restaurants = restaurants.get_restaurants_by_text(search_string)
 
     if not found_restaurants:
-        return render_template("restaurants.html", restaurants=all_restaurants,
-                                                   found_restaurants=found_restaurants,
+        return render_template("restaurants.html", found_restaurants=found_restaurants,
                                                    dropdown=dropdown,
                                                    mymap=mymap,
                                                    error="Ravintoloita ei löytynyt")
 
-    return render_template("restaurants.html", restaurants=all_restaurants,
-                                               found_restaurants=found_restaurants,
+    return render_template("restaurants.html", found_restaurants=found_restaurants,
                                                dropdown=dropdown,
                                                mymap=mymap)
 
@@ -135,6 +128,7 @@ def logout():
 
 @app.route("/admin")
 def admin():
+    users.require_role(0)
     return render_template("admin.html")
 
 
@@ -180,4 +174,84 @@ def add_restaurant():
         if not restaurants.add_restaurant(restaurant_name, latitude, longitude, description):
             return render_template("add-restaurant.html", error="Tallennus ei onnistunut")
 
-        return render_template("add-restaurant.html", error="Tallennus onnistui")
+        return render_template("admin.html", message="Tallennus onnistui")
+    
+@app.route("/manage-groups", methods=["GET", "POST"])
+def manage_groups():
+    users.require_role(0)
+
+    dropdown = groups.get_all_groups()
+    unvisible = groups.get_all_unvisible_groups()
+    if request.method == "GET":
+        return render_template("manage-groups.html", dropdown=dropdown,
+                                                     unvisible=unvisible)
+    
+    if request.method == "POST":
+        users.check_csrf()
+
+        if request.form["action"] == "Hae ryhmää":
+            group_id = request.form.get("select_group")
+            if group_id == "":
+                return render_template("manage-groups.html", error="Valitse ryhmä",
+                                                             dropdown=dropdown,
+                                                             unvisible=unvisible)
+            
+            found_restaurants = restaurants.get_restaurants_in_group(group_id)
+            all_restaurants = restaurants.get_all_restaurants()
+            return render_template("manage-groups.html", dropdown=dropdown,
+                                                         unvisible=unvisible,
+                                                         found_restaurants=found_restaurants,
+                                                         all_restaurants=all_restaurants)
+        elif request.form["action"] == "Poista ryhmä":
+            group_id = request.form.get("select_group")
+            if group_id == "":
+                return render_template("manage-groups.html", error="Valitse ryhmä",
+                                                             dropdown=dropdown,
+                                                             unvisible=unvisible)
+            if not groups.change_group_visibility(group_id, 1):
+                return render_template("manage-groups.html", error="Tallennus ei onnistunut",
+                                                             dropdown=dropdown,
+                                                             unvisible=unvisible)
+            dropdown = groups.get_all_groups()
+            unvisible = groups.get_all_unvisible_groups()
+            return render_template("manage-groups.html", message="Tallennus onnistui",
+                                                         dropdown=dropdown,
+                                                         unvisible=unvisible)
+        elif request.form["action"] == "Palauta ryhmä":
+            group_id = request.form.get("select_group")
+            if group_id == "":
+                return render_template("manage-groups.html", error="Valitse ryhmä",
+                                                             dropdown=dropdown,
+                                                             unvisible=unvisible)
+            if not groups.change_group_visibility(group_id, 0):
+                return render_template("manage-groups.html", error="Tallennus ei onnistunut",
+                                                             dropdown=dropdown,
+                                                             unvisible=unvisible)
+            dropdown = groups.get_all_groups()
+            unvisible = groups.get_all_unvisible_groups()
+            return render_template("manage-groups.html", message="Tallennus onnistui",
+                                                         dropdown=dropdown,
+                                                         unvisible=unvisible)
+        else:
+            group_name = request.form["group_name"]
+            if group_name == "":
+                return render_template("manage-groups.html", error="Ryhmän nimi ei voi olla tyhjä",
+                                                             dropdown=dropdown,
+                                                             unvisible=unvisible)
+            if len(group_name) > 50:
+                return render_template("manage-groups.html", error="Ryhmän nimi on liian pitkä",
+                                                             dropdown=dropdown,
+                                                             unvisible=unvisible)
+            if groups.find_group(group_name):
+                return render_template("manage-groups.html", error="Samanniminen ryhmä on jo olemassa",
+                                                             dropdown=dropdown,
+                                                             unvisible=unvisible)
+            
+            if not groups.add_group(group_name):
+                return render_template("manage-groups.html", error="Tallennus ei onnistunut",
+                                                             dropdown=dropdown,
+                                                             unvisible=unvisible)
+            dropdown = groups.get_all_groups()
+            return render_template("manage-groups.html", message="Tallennus onnistui",
+                                                         dropdown=dropdown,
+                                                         unvisible=unvisible)
