@@ -87,7 +87,7 @@ def get_restaurants_by_text(search_string):
                   FROM restaurants R 
                   LEFT JOIN comments C ON R.id=C.restaurant_id
                   WHERE R.visible=1 AND 
-                  (R.name LIKE '%' || :search_string || '%' OR R.description LIKE '%' || :search_string || '%')
+                  (R.name ILIKE '%' || :search_string || '%' OR R.description ILIKE '%' || :search_string || '%')
                   GROUP BY R.id
                   ORDER BY avg_stars DESC""")
     return db.session.execute(sql, {"search_string":search_string}).fetchall()

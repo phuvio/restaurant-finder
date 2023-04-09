@@ -36,7 +36,7 @@ def show_restaurants():
                                                        mymap=mymap)
         found_restaurants = restaurants.get_restaurants_in_group(group_id)
     else:
-        search_string = request.form["search_string"]
+        search_string = request.form["search_string"].lower()
         if len(search_string) < 1 or len(search_string) > 20:
             return render_template("restaurants.html",
                                    restaurants=all_restaurants,
