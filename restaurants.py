@@ -76,10 +76,19 @@ def get_restaurants_in_group(group_id):
     sql = text("""SELECT R.id, R.name, AVG(C.stars)::numeric(10,1) AS avg_stars
                   FROM restaurantsingroups G
                   INNER JOIN restaurants R ON G.restaurant_id=R.id
-                  INNER JOIN  comments C ON R.id=C.restaurant_id
+                  LEFT JOIN comments C ON R.id=C.restaurant_id
                   WHERE R.visible=1 AND G.group_id=:group_id
                   GROUP BY G.group_id, R.id, R.name
                   ORDER BY avg_stars DESC""")
+    return db.session.execute(sql, {"group_id":group_id}).fetchall()
+
+def get_restaurants_in_group_order_by_name(group_id):
+    sql = text("""SELECT R.id, R.name
+                  FROM restaurantsingroups G
+                  INNER JOIN restaurants R ON G.restaurant_id=R.id
+                  WHERE R.visible=1 AND G.group_id=:group_id
+                  GROUP BY G.group_id, R.id, R.name
+                  ORDER BY R.name""")
     return db.session.execute(sql, {"group_id":group_id}).fetchall()
 
 def get_restaurants_by_text(search_string):

@@ -196,12 +196,17 @@ def manage_groups():
                                                              dropdown=dropdown,
                                                              unvisible=unvisible)
             
-            found_restaurants = restaurants.get_restaurants_in_group(group_id)
+            found_restaurants = restaurants.get_restaurants_in_group_order_by_name(group_id)
+            found_ids = []
+            for found in found_restaurants:
+                found_ids.append(found[0])
             all_restaurants = restaurants.get_all_restaurants()
             return render_template("manage-groups.html", dropdown=dropdown,
                                                          unvisible=unvisible,
                                                          found_restaurants=found_restaurants,
-                                                         all_restaurants=all_restaurants)
+                                                         found_ids=found_ids,
+                                                         all_restaurants=all_restaurants,
+                                                         group_id=group_id)
         elif request.form["action"] == "Poista ryhmä":
             group_id = request.form.get("select_group")
             if group_id == "":
@@ -232,6 +237,50 @@ def manage_groups():
             return render_template("manage-groups.html", message="Tallennus onnistui",
                                                          dropdown=dropdown,
                                                          unvisible=unvisible)
+        elif request.form["action"] == "Lisää ryhmään":
+            group_id = request.form.get("group_id")
+            restaurant_id = request.form.get("restaurant_id")
+            if not groups.add_restaurant_into_group(group_id, restaurant_id):
+                return render_template("manage-groups.html", error="Tallennus ei onnistunut",
+                                                             dropdown=dropdown,
+                                                             unvisible=unvisible,
+                                                             found_restaurants=found_restaurants,
+                                                             all_restaurants=all_restaurants,
+                                                             group_id=group_id)
+            found_restaurants = restaurants.get_restaurants_in_group_order_by_name(group_id)
+            found_ids = []
+            for found in found_restaurants:
+                found_ids.append(found[0])
+            all_restaurants = restaurants.get_all_restaurants()
+            return render_template("manage-groups.html", message="Tallennus onnistui",
+                                                         dropdown=dropdown,
+                                                         unvisible=unvisible,
+                                                         found_restaurants=found_restaurants,
+                                                         found_ids=found_ids,
+                                                         all_restaurants=all_restaurants,
+                                                         group_id=group_id)
+        elif request.form["action"] == "Poista ryhmästä":
+            group_id = request.form.get("group_id")
+            restaurant_id = request.form.get("restaurant_id")
+            if not groups.remove_restaurant_from_group(group_id, restaurant_id):
+                return render_template("manage-groups.html", error="Tallennus ei onnistunut",
+                                                             dropdown=dropdown,
+                                                             unvisible=unvisible,
+                                                             found_restaurants=found_restaurants,
+                                                             all_restaurants=all_restaurants,
+                                                             group_id=group_id)
+            found_restaurants = restaurants.get_restaurants_in_group_order_by_name(group_id)
+            found_ids = []
+            for found in found_restaurants:
+                found_ids.append(found[0])
+            all_restaurants = restaurants.get_all_restaurants()
+            return render_template("manage-groups.html", message="Tallennus onnistui",
+                                                         dropdown=dropdown,
+                                                         unvisible=unvisible,
+                                                         found_restaurants=found_restaurants,
+                                                         found_ids=found_ids,
+                                                         all_restaurants=all_restaurants,
+                                                         group_id=group_id)
         else:
             group_name = request.form["group_name"]
             if group_name == "":
