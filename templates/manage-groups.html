@@ -1,0 +1,77 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <h2>Hallinnoi ryhmiä</h2>
+
+    <h3>Lisää ryhmä</h3>
+
+    <form action="/manage-groups" method="post">
+        Nimi: <br><input type="text" name="group_name">
+        <br>
+        <input type="submit" name="action" value="Luo ryhmä">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    </form>
+
+    <h3>Poista ryhmä näkyvistä</h3>
+
+    <form action="/manage-groups" method="post">
+        <select name="select_group" method="post">
+            <option value="">-- Valitse ryhmä --</option>
+            {% for group in dropdown %}
+                <option value="{{ group.id }}">{{ group.name }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" name="action" value="Poista ryhmä">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    </form>
+
+    <h3>Palauta ryhmä näkyviin</h3>
+
+    <form action="/manage-groups" method="post">
+        <select name="select_group" method="post">
+            <option value="">-- Valitse ryhmä --</option>
+            {% for group in unvisible %}
+                <option value="{{ group.id }}">{{ group.name }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" name="action" value="Palauta ryhmä">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    </form>
+
+    <h3>Valitse ravintolat ryhmään</h3>
+
+    Valitse ryhmä: <br>
+    <form action="/manage-groups" method="post">
+        <select name="select_group" method="post">
+            <option value="">-- Valitse ryhmä --</option>
+            {% for group in dropdown %}
+                <option value="{{ group.id }}">{{ group.name }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" name="action" value="Hae ryhmää">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    </form>
+
+    {% if found_restaurants %}
+        <h3>Ryhmän ravintolat</h3>
+        {% for found in found_restaurants %}
+            <p>{{ found.name }}</p>
+        {% endfor %}
+    {% endif %}
+
+    {% if all_restaurants %}
+        <h3>Ravintolat, jotka eivät ole ryhmässä</h3>
+        {% for restaurant in all_restaurants %}
+            {% if restaurant not in found_restaurants %}
+                <p>{{ restaurant.name }}</p>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {{ error }} {{ message }}
+    
+    <br>
+    
+    <a href="/restaurants">Takaisin pääsivulle</a>
+
+{% endblock %}
