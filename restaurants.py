@@ -91,6 +91,18 @@ def get_restaurants_in_group_order_by_name(group_id):
                   ORDER BY R.name""")
     return db.session.execute(sql, {"group_id":group_id}).fetchall()
 
+def get_restaurants_not_in_group(group_id):
+    sql = text("""SELECT R.id, R.name
+                  FROM restaurantsingroups G
+                  INNER JOIN restaurants R ON G.restaurant_id=R.id
+                  WHERE R.visible=1 AND R.id NOT IN
+                    (SELECT restaurant_id 
+                    FROM restaurantsingroups
+                    WHERE group_id=:group_id)
+                  GROUP BY R.id, R.name
+                  ORDER BY R.name""")
+    return db.session.execute(sql, {"group_id":group_id}).fetchall()
+
 def get_restaurants_by_text(search_string):
     sql = text("""SELECT R.id, R.name, AVG(C.stars)::numeric(10,1) AS avg_stars
                   FROM restaurants R 
