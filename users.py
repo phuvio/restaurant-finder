@@ -1,15 +1,15 @@
 import os
 from sqlalchemy.sql import text
-from db import db
 from flask import abort, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
+from db import db
 
 
 def login(username, password):
     sql = text("""SELECT id, password, role
                   FROM users 
                   WHERE username=:username""")
-    
+
     result = db.session.execute(sql, {"username":username})
     user = result.fetchone()
     if not user:
@@ -49,3 +49,35 @@ def require_role(role):
 def check_csrf():
     if session["csrf_token"] != request.form["csrf_token"]:
         abort(403)
+
+def get_all_basic_users():
+    sql = text("""SELECT id, username
+                  FROM users
+                  WHERE role=1
+                  ORDER BY username""")
+    return db.session.execute(sql).fetchall()
+
+def get_all_admin_users():
+    sql = text("""SELECT id, username
+                  FROM users
+                  WHERE role=0
+                  ORDER BY username""")
+    return db.session.execute(sql).fetchall()
+
+def change_users_role(id, role):
+    if role == 1:
+        role = 0
+    else:
+        role = 1
+    sql = text("""UPDATE users SET role=:role
+                  WHERE id=:id""")
+    db.session.execute(sql, {"id":id, "role":role})
+    db.session.commit()
+    return id
+
+def remove_user(id):
+    sql = text("""DELETE FROM users
+                  WHERE id=:id""")
+    db.session.execute(sql, {"id":id})
+    db.session.commit()
+    return id

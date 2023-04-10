@@ -18,3 +18,10 @@ def remove_comment(comment_id):
                   WHERE comment_id=:comment_id""")
     db.session.execute(sql, {"comment_id":comment_id})
     db.session.commit()
+
+def remove_users_all_comments(user_id):
+    sql = text("""DELETE FROM comments
+                  WHERE user_id=:user_id""")
+    db.session.execute(sql, {"user_id":user_id})
+    db.session.commit()
+    return user_id
