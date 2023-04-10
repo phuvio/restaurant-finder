@@ -6,7 +6,7 @@ def create_map():
     all_restaurants = restaurants.get_all_restaurants()
 
     markers = []
-    
+
     for restaurant in all_restaurants:
         marker = {}
         marker["lat"] = restaurant.latitude
@@ -18,7 +18,7 @@ def create_map():
             link = "<a href=/restaurant/" + str(restaurant.id) + ">" + restaurant.name + "</a>"
         marker["infobox"] = link
         markers.append(marker)
-    
+
     mymap = Map(
         identifier="mymap",
         lat=60.169857,

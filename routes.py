@@ -4,7 +4,7 @@ import restaurants
 import groups
 import comments
 import users
-import map
+import googlemap
 
 
 regex = '[+-]?[0-9]+\.[0-9]+'
@@ -15,7 +15,7 @@ def index():
 
 @app.route("/restaurants", methods=["GET", "POST"])
 def show_restaurants():
-    mymap = map.create_map()
+    mymap = googlemap.create_map()
 
     dropdown = groups.get_all_groups()
 
