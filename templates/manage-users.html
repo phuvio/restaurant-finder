@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <h2>Hallinnoi käyttäjiä</h2>
+
+    <h3>Poista käyttäjä</h3>
+
+    Käyttäjän poistaminen poistaa myös hänen eri ravintoloille antamansa kommentit.
+    Voit poistaa vain perustason käyttäjiä.
+
+    <form action="/manage-users" method="post">
+        <select name="select_user" method="post">
+            <option value="">-- Valitse käyttäjä --</option>
+            {% for user in basic_users %}
+                <option value="{{ user.id }}">{{ user.username }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" name="action" value="Poista käyttäjä">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    </form>
+
+    <h3>Vaihda käyttäjän roolia</h3>
+
+    {% if admin_users %}
+        <h3>Pääkäyttäjätason käyttäjät</h3>
+        {% for user in admin_users %}
+            <p>
+                <form action="/manage-users" method="post">
+                    {{ user.username }}
+                    <input type="submit" name="action" value="Muuta perustasolle">
+                    <input type="hidden" name="admin_id" value="{{ user.id }}">
+                    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                </form>
+            </p>
+        {% endfor %}
+    {% endif %}
+
+    {% if basic_users %}
+        <h3>Perustason käyttäjät</h3>
+        {% for user in basic_users %}
+            <p>
+                <form action="/manage-users" method="post">
+                    {{ user.username }}
+                    <input type="submit" name="action" value="Muuta pääkäyttäjäksi">
+                    <input type="hidden" name="basic_id" value="{{ user.id }}">
+                    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                </form>
+            </p>
+        {% endfor %}
+    {% endif %}
+
+    {{ error }} {{ message }}
+    
+    <br>
+    
+    <a href="/restaurants">Takaisin pääsivulle</a>
+
+{% endblock %}
