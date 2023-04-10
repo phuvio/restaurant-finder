@@ -10,7 +10,7 @@ Ohjelmaa voi testata: [Löydä ravintola](https://tsoha2023-restaurant-finder.fl
 
 Ohjelmaan voi luoda uusia käyttäjiä ja kirjautua sisään. 
 
-Etusivulla on kartta, jossa tietokantaan luodut ravintolat näkyvät merkkeinä. Merkissä lukee kyseisen ravintolan nimi. Klikkaamalla merkkiä, sen yläpuolelle ilmestyy infolaatikko, jossa on ravintolan tähtien määrä sekä linkki ravintolan tietosivulle. Etusivulla voi myös hakea ravintoloita hakusanalla tai ryhmästä.
+Etusivulla on kartta, jossa tietokantaan luodut ravintolat näkyvät merkkeinä. Merkissä lukee kyseisen ravintolan nimi. Klikkaamalla merkkiä, sen yläpuolelle ilmestyy infolaatikko, jossa on ravintolan tähtien määrä sekä linkki ravintolan tietosivulle. Etusivulla voi myös hakea ravintoloita hakusanalla tai ryhmästä. Klikkaamalla ravintolan nimeä siirrytään kyseisen ravintolan sivulle.
 
 Ravintolan sivulla näkyy ravintolan tiedot ja kirjautunut käyttäjä voi jättää arvion ravintolasta.
 
@@ -23,6 +23,8 @@ Pääkäyttäjä voi
 - palauttaa ryhmiä näkyviin
 - lisätä ravintoloita ryhmiin
 - poistaa ravintoloita ryhmistä
+- poistaa perustason käyttäjän, jolloin myös käyttäjän kommentit poistetaan
+- muuttaa käyttäjän roolia
 
 ### Tunnetut puutteet
 
@@ -30,7 +32,4 @@ Pääkäyttäjä voi
 - pääkäyttäjän ominaisuudet puuttuvat
   - ravintolan tietojen muokkaaminen
   - ravintolan poistaminen
-  - kommenttien poistaminen
-  - käyttäjien poistaminen
-  - käyttäjien roolin muuttaminen 
- 
+  - kommenttien poistaminen 
