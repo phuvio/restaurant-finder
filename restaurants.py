@@ -48,7 +48,10 @@ def add_restaurant(name, latitude, longitude, description):
     sql = text("""INSERT INTO restaurants (name, latitude, longitude, description, visible)
                   VALUES (:name, :latitude, :longitude, :description, 1)
                   RETURNING id""")
-    id = db.session.execute(sql, {"name":name, "latitude":latitude, "longitude":longitude, "description":description}).fetchone()[0]
+    id = db.session.execute(sql, {"name":name,
+                                  "latitude":latitude,
+                                  "longitude":longitude,
+                                  "description":description}).fetchone()[0]
     db.session.commit()
     return id
 

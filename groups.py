@@ -27,7 +27,7 @@ def add_group(name):
     sql = text("""INSERT INTO groups (name, visible)
                   VALUES (:name, 1)
                   RETURNING id""")
-    db.session.execute(sql, {"name":name}).fetchone()[0]
+    db.session.execute(sql, {"name":name})
     db.session.commit()
     return name
 
