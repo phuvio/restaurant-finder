@@ -64,20 +64,20 @@ def get_all_admin_users():
                   ORDER BY username""")
     return db.session.execute(sql).fetchall()
 
-def change_users_role(id, role):
+def change_users_role(users_id, role):
     if role == 1:
         role = 0
     else:
         role = 1
     sql = text("""UPDATE users SET role=:role
                   WHERE id=:id""")
-    db.session.execute(sql, {"id":id, "role":role})
+    db.session.execute(sql, {"id":users_id, "role":role})
     db.session.commit()
     return id
 
-def remove_user(id):
+def remove_user(users_id):
     sql = text("""DELETE FROM users
                   WHERE id=:id""")
-    db.session.execute(sql, {"id":id})
+    db.session.execute(sql, {"id":users_id})
     db.session.commit()
     return id
