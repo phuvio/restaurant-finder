@@ -97,7 +97,7 @@ def get_restaurants_in_group_order_by_name(group_id):
 def get_restaurants_not_in_group(group_id):
     sql = text("""SELECT R.id, R.name
                   FROM restaurantsingroups G
-                  INNER JOIN restaurants R ON G.restaurant_id=R.id
+                  RIGHT JOIN restaurants R ON G.restaurant_id=R.id
                   WHERE R.visible=1 AND R.id NOT IN
                     (SELECT restaurant_id 
                     FROM restaurantsingroups
