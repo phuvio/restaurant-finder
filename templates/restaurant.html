@@ -3,7 +3,9 @@
 
     <h2>{{ name }}</h2>
 
-    Tähtiä {{ stars }}
+    {% if stars %}
+        Tähtiä {{ stars }}
+    {% endif %}
 
     <br>
 
@@ -18,11 +20,13 @@
         {{ info.value }}
     {% endfor %}
 
-    <h3>Arvosteluja</h3>
+    {% if comments %}
+        <h3>Arvosteluja</h3>
 
-    {% for comment in comments %}
-        <p>{{ comment.username }}: {{ comment.stars }} {{ comment.comment }} 
-    {% endfor %}
+        {% for comment in comments %}
+            <p>{{ comment.username }}: {{ comment.stars }} {{ comment.comment }} 
+        {% endfor %}
+    {% endif %}
 
     <br>
     {% if session.user_username %}
