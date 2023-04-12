@@ -383,3 +383,41 @@ def manage_users():
                                        admin_users=admin_users,
                                        basic_users=basic_users)
   
+@app.route("/manage-restaurants", methods=["GET", "POST"])
+def manage_restaurants():
+    users.require_role(0)
+
+    visible_restaurants = restaurants.get_all_restaurants()
+    hidden_restaurants = restaurants.get_all_hidden_restaurants()
+
+    if request.method == "GET":
+        return render_template("manage-restaurants.html",
+                               visible_restaurants=visible_restaurants,
+                               hidden_restaurants=hidden_restaurants)
+
+    if request.method == "POST":
+        match request.form["action"]:
+            case "Poista näkyvistä":
+                restaurant_id = request.form.get("visible_id")
+                if not restaurants.change_restaurant_visibility(restaurant_id, 1):
+                    return render_template("manage-restaurants.html",
+                                           error="Ravintolan näkyvyyden muutos epäonnistui",
+                                           visible_restaurants=visible_restaurants,
+                                           hidden_restaurants=hidden_restaurants)
+                visible_restaurants = restaurants.get_all_restaurants()
+                hidden_restaurants = restaurants.get_all_hidden_restaurants()
+                return render_template("manage-restaurants.html",
+                                       visible_restaurants=visible_restaurants,
+                                       hidden_restaurants=hidden_restaurants)
+            case "Palauta näkyviin":
+                restaurant_id = request.form.get("hidden_id")
+                if not restaurants.change_restaurant_visibility(restaurant_id, 0):
+                    return render_template("manage-restaurants.html",
+                                           error="Ravintolan näkyvyyden muutos epäonnistui",
+                                           visible_restaurants=visible_restaurants,
+                                           hidden_restaurants=hidden_restaurants)
+                visible_restaurants = restaurants.get_all_restaurants()
+                hidden_restaurants = restaurants.get_all_hidden_restaurants()
+                return render_template("manage-restaurants.html",
+                                       visible_restaurants=visible_restaurants,
+                                       hidden_restaurants=hidden_restaurants)

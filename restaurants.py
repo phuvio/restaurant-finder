@@ -12,6 +12,13 @@ def get_all_restaurants():
                   ORDER BY R.name""")
     return db.session.execute(sql).fetchall()
 
+def get_all_hidden_restaurants():
+    sql = text("""SELECT R.id, R.name
+                  FROM restaurants R
+                  WHERE visible=0
+                  ORDER BY R.name""")
+    return db.session.execute(sql).fetchall()
+
 def get_restaurant_stars(restaurant_id):
     sql = text("""SELECT AVG(C.stars)::numeric(10,1)
                   FROM restaurants R, comments C
@@ -64,6 +71,7 @@ def change_restaurant_visibility(restaurant_id, visible):
                   WHERE id=:id""")
     db.session.execute(sql, {"id":restaurant_id, "visible":visible})
     db.session.commit()
+    return restaurant_id
 
 def change_restaurant_extra_info_visibility(information_id):
     if visible == 1:
@@ -74,6 +82,7 @@ def change_restaurant_extra_info_visibility(information_id):
                   WHERE id=:id""")
     db.session.execute(sql, {"id":information_id})
     db.session.commit()
+    return information_id
 
 def get_restaurants_in_group(group_id):
     sql = text("""SELECT R.id, R.name, AVG(C.stars)::numeric(10,1) AS avg_stars
