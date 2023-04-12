@@ -39,7 +39,7 @@ def get_restaurant_basic_info(restaurant_id):
     sql = text("""SELECT R.id, R.name, AVG(C.stars)::numeric(10,1) AS avg_stars, R.description
                   FROM restaurants R
                   LEFT JOIN comments C ON R.id=C.restaurant_id
-                  WHERE R.id=:restaurant_id AND R.visible=1
+                  WHERE R.id=:restaurant_id
                   GROUP BY R.id, R.name""")
     return db.session.execute(sql, {"restaurant_id":restaurant_id}).fetchone()
 

@@ -9,7 +9,7 @@
         {% for restaurant in visible_restaurants %}
             <p>
                 <form action="/manage-restaurants" method="post">
-                    {{ restaurant.name }}
+                    <a href="/manage-restaurant/{{ restaurant.id }}">{{ restaurant.name }}</a>
                     <input type="submit" name="action" value="Poista näkyvistä">
                     <input type="hidden" name="visible_id" value="{{ restaurant.id }}">
                     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
@@ -25,7 +25,7 @@
         {% for restaurant in hidden_restaurants %}
             <p>
                 <form action="/manage-restaurants" method="post">
-                    {{ restaurant.name }}
+                    <a href="/manage-restaurant/{{ restaurant.id }}">{{ restaurant.name }}</a>
                     <input type="submit" name="action" value="Palauta näkyviin">
                     <input type="hidden" name="hidden_id" value="{{ restaurant.id }}">
                     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
