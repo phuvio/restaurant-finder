@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <h2>{{ name }}</h2>
+
+    {% if stars %}
+        Tähtiä {{ stars }}
+    {% endif %}
+
+    <br>
+
+    {% if description %}
+        {{ description }}
+    {% endif %}
+
+    <br>
+
+    {% for info in information %}
+        <h3>{{ info.key }}</h3>
+        {{ info.value }}
+    {% endfor %}
+
+    {% if comments %}
+        <h3>Arvosteluja</h3>
+
+        {% for comment in comments %}
+            <p>{{ comment.username }}: {{ comment.stars }} {{ comment.comment }} 
+        {% endfor %}
+    {% endif %}
+
+    <br>
+    <a href="/manage-restaurants">Takaisin hallinnoi ravintoloita</a>
+    <a href="/admin">Takaisin ylläpitoon</a>   
+    <a href="/restaurants">Takaisin pääsivulle</a>
+
+{% endblock %}
