@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <h2>Hallinnoi ravintoloita</h2>
+
+    <h3>Näkyvissä olevat ravintolat</h3>
+
+    {% if visible_restaurants %}
+        {% for restaurant in visible_restaurants %}
+            <p>
+                <form action="/manage-restaurants" method="post">
+                    {{ restaurant.name }}
+                    <input type="submit" name="action" value="Poista näkyvistä">
+                    <input type="hidden" name="visible_id" value="{{ restaurant.id }}">
+                    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                </form>
+            </p>
+        {% endfor %}
+    {% else %}
+        Ei yhtään ravintolaa
+    {% endif %}
+
+    <h3>Näkyvistä poistetut ravintolat</h3>
+    {% if hidden_restaurants %}
+        {% for restaurant in hidden_restaurants %}
+            <p>
+                <form action="/manage-restaurants" method="post">
+                    {{ restaurant.name }}
+                    <input type="submit" name="action" value="Palauta näkyviin">
+                    <input type="hidden" name="hidden_id" value="{{ restaurant.id }}">
+                    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                </form>
+            </p>
+        {% endfor %}
+    {% else %}
+        Ei yhtään ravintolaa
+    {% endif %}
+
+    <br>
+
+    {{ error }} {{ message }}
+    
+    <br>
+    <a href="/admin">Takaisin ylläpitoon</a>   
+    <a href="/restaurants">Takaisin pääsivulle</a>
+
+{% endblock %}
