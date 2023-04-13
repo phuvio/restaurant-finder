@@ -35,7 +35,7 @@
             {% if restaurant.avg_stars %}
                 <p>{{ restaurant.avg_stars }} <a href="/restaurant/{{ restaurant.id }}">{{ restaurant.name }}</a></p>
             {% else %}
-                <p><a href="/restaurant/{{ found.id }}">{{ restaurant.name }}</a></p>
+                <p><a href="/restaurant/{{ restaurant.id }}">{{ restaurant.name }}</a></p>
             {% endif %}
         {% endfor %}
     {% endif %}
