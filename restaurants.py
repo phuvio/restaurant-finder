@@ -36,7 +36,8 @@ def get_restaurant_comments(restaurant_id):
     return db.session.execute(sql, {"restaurant_id":restaurant_id}).fetchall()
 
 def get_restaurant_basic_info(restaurant_id):
-    sql = text("""SELECT R.id, R.name, AVG(C.stars)::numeric(10,1) AS avg_stars, R.description
+    sql = text("""SELECT R.id, R.name, AVG(C.stars)::numeric(10,1) AS avg_stars, R.description,
+                  R.latitude, R.longitude
                   FROM restaurants R
                   LEFT JOIN comments C ON R.id=C.restaurant_id
                   WHERE R.id=:restaurant_id
@@ -44,7 +45,7 @@ def get_restaurant_basic_info(restaurant_id):
     return db.session.execute(sql, {"restaurant_id":restaurant_id}).fetchone()
 
 def get_restaurant_extra_info(restaurant_id):
-    sql = text("""SELECT I.key, I.value
+    sql = text("""SELECT I.id, I.key, I.value
                   FROM restaurants R, restaurantinformation I
                   WHERE R.id=:restaurant_id AND R.visible=1 AND I.visible=1
                   AND R.id=I.restaurant_id""")

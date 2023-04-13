@@ -9,15 +9,42 @@
 
     <br>
 
-    {% if description %}
-        {{ description }}
-    {% endif %}
+    <h2>Muokkaa ravintolan perustietoja</h2>
 
+    <form action="/manage-restaurant/{{ id }}" method="post">
+        Nimi: <br><input type="text" name="restaurant_name" value="{{ name }}">
+        <br>
+        Sijainti:<br>
+        Leveyspiiri: <input type="text" name="latitude" value="{{ latitude }}"> <br>
+        Pituuspiiri: <input type="text" name="longitude" value="{{ longitude }}">
+        <br>
+        Ravintolan esittely: <br>
+        <textarea name="description" rows="3" cols="40" maxlength="500">{{ description }}</textarea>
+        <p>
+        <input type="submit" value="Tallenna tiedot">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    </form>
+
+    <h2>Muokkaa ravintolan lisätietoja</h2>
+
+    <h3>Lisää lisätieto</h3>
+
+    <form action="/manage-restaurant/{{ id }}" method="post">
+        Lisätiedon otsikko: <input type="text" name="key" maxlength="50"> <br>
+        Lisätieto: <input type="text" name="value" maxlength="500"> <br>
+        <input type="submit" value="Lisää lisätieto">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    </form>
     <br>
 
     {% for info in information %}
         <h3>{{ info.key }}</h3>
-        {{ info.value }}
+        <form action="/manage-restaurant/{{ id }}" method="post">
+            {{ info.value }}
+            <input type="submit" name="action" value="Poista lisätieto">
+            <input type="hidden" name="info_id" value="{{ info.id }}">
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+        </form>
     {% endfor %}
 
     <h3>Arvosteluja</h3>

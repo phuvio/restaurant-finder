@@ -55,7 +55,7 @@ def show_restaurants():
 
 @app.route("/restaurant/<int:id>", methods=["GET", "POST"])
 def restaurant(id):
-    id, name, avg_stars, description = restaurants.get_restaurant_basic_info(id)
+    id, name, avg_stars, description, _, _ = restaurants.get_restaurant_basic_info(id)
     information = restaurants.get_restaurant_extra_info(id)
     restaurant_comments = restaurants.get_restaurant_comments(id)
     if request.method == "GET":
@@ -426,7 +426,7 @@ def manage_restaurants():
 def manage_restaurant(id):
     users.require_role(0)
 
-    id, name, avg_stars, description = restaurants.get_restaurant_basic_info(id)
+    id, name, avg_stars, description, latitude, longitude = restaurants.get_restaurant_basic_info(id)
     information = restaurants.get_restaurant_extra_info(id)
     restaurant_comments = restaurants.get_restaurant_comments(id)
     if request.method == "GET":
@@ -435,6 +435,8 @@ def manage_restaurant(id):
                                name=name,
                                stars=avg_stars,
                                description=description,
+                               latitude=latitude,
+                               longitude=longitude,
                                comments=restaurant_comments,
                                information=information)
 
@@ -452,6 +454,8 @@ def manage_restaurant(id):
                                            name=name,
                                            stars=avg_stars,
                                            description=description,
+                                           latitude=latitude,
+                                           longitude=longitude,
                                            comments=restaurant_comments,
                                            information=information,
                                            error="Kommentin poistaminen epäonnistui")
