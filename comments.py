@@ -15,9 +15,10 @@ def add_comment(restaurant_id, user_id, stars, comment):
 
 def remove_comment(comment_id):
     sql = text("""DELETE FROM comments
-                  WHERE comment_id=:comment_id""")
+                  WHERE id=:comment_id""")
     db.session.execute(sql, {"comment_id":comment_id})
     db.session.commit()
+    return comment_id
 
 def remove_users_all_comments(user_id):
     sql = text("""DELETE FROM comments

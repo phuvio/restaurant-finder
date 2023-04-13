@@ -441,18 +441,20 @@ def manage_restaurant(id):
     if request.method == "POST":
         users.check_csrf()
 
-        stars = request.form["stars"]
-        if stars is None or stars == "":
-            return render_template("restaurant.html",
-                                   id=id,
-                                   name=name,
-                                   stars=avg_stars,
-                                   description=description,
-                                   comments=restaurant_comments,
-                                   information=information)
-
-        restaurant_comment = request.form["comment"]
-        restaurant_id = id
-        user_id = users.user_id()
-        comments.add_comment(restaurant_id, user_id, stars, restaurant_comment)
-        return redirect(url_for("restaurant", id=restaurant_id))
+        match request.form["action"]:
+            case "Poista kommentti":
+                comment_id = request.form.get("comment_id")
+                restaurant_id = request.form.get("restaurant_id")
+                print(restaurant_id)
+                if not comments.remove_comment(comment_id):
+                    return render_template("manage-restaurant.html",
+                                           id=id,
+                                           name=name,
+                                           stars=avg_stars,
+                                           description=description,
+                                           comments=restaurant_comments,
+                                           information=information,
+                                           error="Kommentin poistaminen epäonnistui")
+                restaurant_comments = restaurants.get_restaurant_comments(id)
+                return redirect(url_for("manage_restaurant",
+                                        id=restaurant_id))

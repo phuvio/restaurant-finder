@@ -20,12 +20,20 @@
         {{ info.value }}
     {% endfor %}
 
-    {% if comments %}
-        <h3>Arvosteluja</h3>
+    <h3>Arvosteluja</h3>
 
+    {% if comments %}
         {% for comment in comments %}
-            <p>{{ comment.username }}: {{ comment.stars }} {{ comment.comment }} 
+            <form action="/manage-restaurant/{{ id }}" method="post">
+                {{ comment.username }}: {{ comment.stars }} {{ comment.comment }}
+                <input type="submit" name="action" value="Poista kommentti">
+                <input type="hidden" name="restaurant_id" value="{{ id }}">
+                <input type="hidden" name="comment_id" value="{{ comment.comment_id }}">
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+            </form> 
         {% endfor %}
+    {% else %}
+            Ei arvosteluja
     {% endif %}
 
     <br>
