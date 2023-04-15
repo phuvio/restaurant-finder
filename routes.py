@@ -334,6 +334,8 @@ def manage_users():
                                basic_users=basic_users)
 
     if request.method == "POST":
+        users.check_csrf()
+
         match request.form["action"]:
             case "Poista käyttäjä":
                 user_id = request.form.get("select_user")
@@ -447,7 +449,6 @@ def manage_restaurant(id):
             case "Poista kommentti":
                 comment_id = request.form.get("comment_id")
                 restaurant_id = request.form.get("restaurant_id")
-                print(restaurant_id)
                 if not comments.remove_comment(comment_id):
                     return render_template("manage-restaurant.html",
                                            id=id,
@@ -462,3 +463,217 @@ def manage_restaurant(id):
                 restaurant_comments = restaurants.get_restaurant_comments(id)
                 return redirect(url_for("manage_restaurant",
                                         id=restaurant_id))
+            case "Poista lisätieto":
+                info_id = request.form.get("info_id")
+                if not restaurants.remove_extra_information(info_id):
+                    return render_template("manage-restaurant.html",
+                                           id=id,
+                                           name=name,
+                                           stars=avg_stars,
+                                           description=description,
+                                           latitude=latitude,
+                                           longitude=longitude,
+                                           comments=restaurant_comments,
+                                           information=information,
+                                           error="Lisätiedon poistaminen epäonnistui")
+                return redirect(url_for("manage_restaurant",
+                                        id=id))
+            case "Lisää lisätieto":
+                key = request.form.get("key")
+                value = request.form.get("value")
+                if key == "":
+                    return render_template("manage-restaurant.html",
+                                           id=id,
+                                           name=name,
+                                           stars=avg_stars,
+                                           description=description,
+                                           latitude=latitude,
+                                           longitude=longitude,
+                                           comments=restaurant_comments,
+                                           information=information,
+                                           error="Lisätiedon otsikko ei voi olla tyhjä")
+                if len(key) > 50:
+                    return render_template("manage-restaurant.html",
+                                           id=id,
+                                           name=name,
+                                           stars=avg_stars,
+                                           description=description,
+                                           latitude=latitude,
+                                           longitude=longitude,
+                                           comments=restaurant_comments,
+                                           information=information,
+                                           error="Lisätiedon otsikko on liian pitkä")
+                if value == "":
+                    return render_template("manage-restaurant.html",
+                                           id=id,
+                                           name=name,
+                                           stars=avg_stars,
+                                           description=description,
+                                           latitude=latitude,
+                                           longitude=longitude,
+                                           comments=restaurant_comments,
+                                           information=information,
+                                           error="Lisätieto ei voi olla tyhjä")
+                if len(value) > 500:
+                    return render_template("manage-restaurant.html",
+                                           id=id,
+                                           name=name,
+                                           stars=avg_stars,
+                                           description=description,
+                                           latitude=latitude,
+                                           longitude=longitude,
+                                           comments=restaurant_comments,
+                                           information=information,
+                                           error="Lisätieto on liian pitkä")
+                if not restaurants.add_extra_information(id,
+                                                         key,
+                                                         value):
+                    return render_template("manage-restaurant.html",
+                                           id=id,
+                                           name=name,
+                                           stars=avg_stars,
+                                           description=description,
+                                           latitude=latitude,
+                                           longitude=longitude,
+                                           comments=restaurant_comments,
+                                           information=information,
+                                           error="Lisätiedon tallennus epäonnistui")
+                return redirect(url_for("manage_restaurant", id=id))
+            case "Tallenna tiedot":
+                restaurant_name_new = request.form["restaurant_name"]
+                if restaurant_name_new == "":
+                    return render_template("manage-restaurant.html",
+                                           id=id,
+                                           name=name,
+                                           stars=avg_stars,
+                                           description=description,
+                                           latitude=latitude,
+                                           longitude=longitude,
+                                           comments=restaurant_comments,
+                                           information=information,
+                                           error="Ravintolan nimi ei voi olla tyhjä")
+                if len(restaurant_name_new) > 50:
+                    return render_template("manage-restaurant.html",
+                                           id=id,
+                                           name=name,
+                                           stars=avg_stars,
+                                           description=description,
+                                           latitude=latitude,
+                                           longitude=longitude,
+                                           comments=restaurant_comments,
+                                           information=information,
+                                           error="Ravintolan nimi on liian pitkä")
+
+                latitude_new = request.form["latitude"]
+                if latitude_new == "":
+                    return render_template("manage-restaurant.html",
+                                           id=id,
+                                           name=name,
+                                           stars=avg_stars,
+                                           description=description,
+                                           latitude=latitude,
+                                           longitude=longitude,
+                                           comments=restaurant_comments,
+                                           information=information,
+                                           error="Leveyspiiri ei voi olla tyhjä")
+                try:
+                    float(latitude_new)
+                except:
+                    return render_template("manage-restaurant.html",
+                                           id=id,
+                                           name=name,
+                                           stars=avg_stars,
+                                           description=description,
+                                           latitude=latitude,
+                                           longitude=longitude,
+                                           comments=restaurant_comments,
+                                           information=information,
+                                           error="Leveyspiirin pitää olla numero")
+                if not 60 < float(latitude_new) < 70:
+                    return render_template("manage-restaurant.html",
+                                           id=id,
+                                           name=name,
+                                           stars=avg_stars,
+                                           description=description,
+                                           latitude=latitude,
+                                           longitude=longitude,
+                                           comments=restaurant_comments,
+                                           information=information,
+                                           error="Suomen leveyspiirit ovat 60-70 välillä")
+
+                longitude_new = request.form["longitude"]
+                if longitude_new == "":
+                    return render_template("manage-restaurant.html",
+                                           id=id,
+                                           name=name,
+                                           stars=avg_stars,
+                                           description=description,
+                                           latitude=latitude,
+                                           longitude=longitude,
+                                           comments=restaurant_comments,
+                                           information=information,
+                                           error="Pituuspiiri ei voi olla tyhjä")
+                try:
+                    float(longitude_new)
+                except:
+                    return render_template("manage-restaurant.html",
+                                           id=id,
+                                           name=name,
+                                           stars=avg_stars,
+                                           description=description,
+                                           latitude=latitude,
+                                           longitude=longitude,
+                                           comments=restaurant_comments,
+                                           information=information,
+                                           error="Pituuspiirin pitää olla numero")
+                if not 22 < float(longitude_new) < 31:
+                    return render_template("manage-restaurant.html",
+                                           id=id,
+                                           name=name,
+                                           stars=avg_stars,
+                                           description=description,
+                                           latitude=latitude,
+                                           longitude=longitude,
+                                           comments=restaurant_comments,
+                                           information=information,
+                                           error="Suomen pituuspiirit ovat 22-31 välillä")
+
+                description_new = request.form["description"]
+                if len(description_new) > 500:
+                    return render_template("manage-restaurant.html",
+                                           id=id,
+                                           name=name,
+                                           stars=avg_stars,
+                                           description=description,
+                                           latitude=latitude,
+                                           longitude=longitude,
+                                           comments=restaurant_comments,
+                                           information=information,
+                                           error="Ravintolan esittely on liian pitkä")
+
+                if not restaurants.update_restaurant(id,
+                                                     restaurant_name_new,
+                                                     latitude_new,
+                                                     longitude_new,
+                                                     description_new):
+                    return render_template("manage-restaurant.html",
+                                           id=id,
+                                           name=name,
+                                           stars=avg_stars,
+                                           description=description,
+                                           latitude=latitude,
+                                           longitude=longitude,
+                                           comments=restaurant_comments,
+                                           information=information,
+                                           error="Tallennus ei onnistunut")
+
+                return render_template("manage-restaurant.html",
+                                           id=id,
+                                           name=restaurant_name_new,
+                                           stars=avg_stars,
+                                           description=description_new,
+                                           latitude=latitude_new,
+                                           longitude=longitude_new,
+                                           comments=restaurant_comments,
+                                           information=information,
+                                           message="Tallennus onnistui")
