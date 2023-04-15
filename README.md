@@ -18,18 +18,18 @@ Pääkäyttäjä pääsee hallinnoimaan tietokantaan tallennettuja tietoja.
 
 Pääkäyttäjä voi 
 - lisätä ravintoloita
+- poistaa ravintola näkyvistä
+- palauttaa ravintola näkyviin
+- poistaa ravintolalle annetun kommentin
+- muuttaa ravintolan tietoja
 - lisätä ryhmiä
-- poistaa ryhmiä näkyvistä
-- palauttaa ryhmiä näkyviin
-- lisätä ravintoloita ryhmiin
-- poistaa ravintoloita ryhmistä
+- poistaa ryhmä näkyvistä
+- palauttaa ryhmä näkyviin
+- lisätä ravintola ryhmään
+- poistaa ravintola ryhmästä
 - poistaa perustason käyttäjän, jolloin myös käyttäjän kommentit poistetaan
 - muuttaa käyttäjän roolia
 
 ### Tunnetut puutteet
 
 - sivun ulkoasu on tekemättä
-- pääkäyttäjän ominaisuudet puuttuvat
-  - ravintolan tietojen muokkaaminen
-  - ravintolan poistaminen
-  - kommenttien poistaminen 
