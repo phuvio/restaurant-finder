@@ -52,7 +52,6 @@ def get_restaurant_extra_info(restaurant_id):
     return db.session.execute(sql, {"restaurant_id":restaurant_id}).fetchall()
 
 def add_restaurant(name, latitude, longitude, description):
-    print(name, latitude, longitude, description)
     sql = text("""INSERT INTO restaurants (name, latitude, longitude, description, visible)
                   VALUES (:name, :latitude, :longitude, :description, 1)
                   RETURNING id""")
@@ -62,6 +61,38 @@ def add_restaurant(name, latitude, longitude, description):
                                   "description":description}).fetchone()[0]
     db.session.commit()
     return id
+
+def update_restaurant(restaurant_id, name, latitude, longitude, description):
+    sql = text("""UPDATE restaurants
+                  SET name=:name,
+                      latitude=:latitude,
+                      longitude=:longitude,
+                      description=:description
+                  WHERE id=:restaurant_id""")
+    db.session.execute(sql, {"restaurant_id":restaurant_id,
+                             "name":name,
+                             "latitude":latitude,
+                             "longitude":longitude,
+                             "description":description})
+    db.session.commit()
+    return restaurant_id
+
+def add_extra_information(restaurant_id, key, value):
+    sql = text("""INSERT INTO restaurantinformation (restaurant_id, key, value, visible)
+                  VALUES (:restaurant_id, :key, :value, 1)
+                  RETURNING id""")
+    information_id = db.session.execute(sql, {"restaurant_id":restaurant_id,
+                                              "key":key,
+                                              "value":value}).fetchone()[0]
+    db.session.commit()
+    return information_id
+
+def remove_extra_information(information_id):
+    sql = text("""DELETE FROM restaurantinformation
+                  WHERE id=:information_id""")
+    db.session.execute(sql, {"information_id":information_id})
+    db.session.commit()
+    return information_id
 
 def change_restaurant_visibility(restaurant_id, visible):
     if visible == 1:
