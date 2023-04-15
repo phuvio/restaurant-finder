@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, flash
 from app import app
 import restaurants
 import groups
@@ -6,8 +6,6 @@ import comments
 import users
 import googlemap
 
-
-regex = '[+-]?[0-9]+\.[0-9]+'
 
 @app.route("/")
 def index():
@@ -27,26 +25,19 @@ def show_restaurants():
     if request.form["action"] == "Hae ryhmää":
         group_id = request.form.get("select_group")
         if group_id == "":
-            return render_template("restaurants.html",
-                                   error="Valitse ryhmä.",
-                                   dropdown=dropdown,
-                                   mymap=mymap)
+            flash("Valitse ryhmä", "error")
+            return redirect(url_for("show_restaurants"))
         found_restaurants = restaurants.get_restaurants_in_group(group_id)
     else:
         search_string = request.form["search_string"].lower()
         if len(search_string) < 1 or len(search_string) > 20:
-            return render_template("restaurants.html",
-                                   error="Hakusana voi olla 1-20 merkkiä pitkä.",
-                                   dropdown=dropdown,
-                                   mymap=mymap)
+            flash("Hakusana voi olla 1-20 merkkiä pitkä")
+            return redirect(url_for("show_restaurants"))
         found_restaurants = restaurants.get_restaurants_by_text(search_string)
 
     if not found_restaurants:
-        return render_template("restaurants.html",
-                               found_restaurants=found_restaurants,
-                               dropdown=dropdown,
-                               mymap=mymap,
-                               error="Ravintoloita ei löytynyt")
+        flash("Ravintoloita ei löytynyt", "info")
+        return redirect(url_for("show_restaurants"))
 
     return render_template("restaurants.html",
                            found_restaurants=found_restaurants,
@@ -54,77 +45,70 @@ def show_restaurants():
                            mymap=mymap)
 
 @app.route("/restaurant/<int:id>", methods=["GET", "POST"])
-def restaurant(id):
-    id, name, avg_stars, description, _, _ = restaurants.get_restaurant_basic_info(id)
-    information = restaurants.get_restaurant_extra_info(id)
-    restaurant_comments = restaurants.get_restaurant_comments(id)
-    if request.method == "GET":
-        return render_template("restaurant.html",
-                               id=id,
+def restaurant(res_id):
+    res_id, name, avg_stars, description, _, _ = restaurants.get_restaurant_basic_info(res_id)
+    information = restaurants.get_restaurant_extra_info(res_id)
+    restaurant_comments = restaurants.get_restaurant_comments(res_id)
+
+    if request.method == "POST":
+        users.check_csrf()
+
+        stars = request.form["stars"]
+        restaurant_comment = request.form["comment"]
+        restaurant_id = res_id
+        user_id = users.user_id()
+        if not comments.add_comment(restaurant_id, user_id, stars, restaurant_comment):
+            flash("Kommentin tallentaminen epäonnistui", "error")
+            return redirect(url_for("restaurant", id=restaurant_id))
+        return redirect(url_for("restaurant", id=restaurant_id))
+
+    return render_template("restaurant.html",
+                               id=res_id,
                                name=name,
                                stars=avg_stars,
                                description=description,
                                comments=restaurant_comments,
                                information=information)
 
-    if request.method == "POST":
-        users.check_csrf()
-
-        stars = request.form["stars"]
-        if stars is None or stars == "":
-            return render_template("restaurant.html",
-                                   id=id,
-                                   name=name,
-                                   stars=avg_stars,
-                                   description=description,
-                                   comments=restaurant_comments,
-                                   information=information)
-
-        restaurant_comment = request.form["comment"]
-        restaurant_id = id
-        user_id = users.user_id()
-        comments.add_comment(restaurant_id, user_id, stars, restaurant_comment)
-        return redirect(url_for("restaurant", id=restaurant_id))
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    if request.method == "GET":
-        return render_template("login.html")
-
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
 
         if not users.login(username, password):
-            return render_template("login.html", error="Väärä tunnus tai salasana")
+            flash("Väärä käyttäjätunnus tai salasana")
+            return redirect("/login")
         return redirect("/")
+
+    return render_template("login.html")
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    if request.method == "GET":
-        return render_template("register.html")
-
     if request.method == "POST":
         username = request.form["username"]
-        if len(username) < 3 or len(username) > 20:
-            return render_template("register.html", error="Tunnuksen tulee olla 3-20 merkkiä")
-
         password1 = request.form["password1"]
         password2 = request.form["password2"]
-        if password1 != password2:
-            return render_template("register.html", error="Salasanat eivät ole samat")
-        if password1 == "":
-            return render_template("register.html", error="Salasana on tyhjä")
-        if len(password1) < 3:
-            return render_template("register.html",
-                                   error="Salasanan pitää olla vähintään 3 merkkiä pitkä")
-        if len(password1) > 50:
-            return render_template("register.html", error="Salasana on liian pitkä")
+
+        errors = {(len(username) < 3 or len(username) > 20):
+                  "Käyttäjätunnuksen tulee olla 3-20 merkkiä",
+                  (password1 == ""): "Salasana on tyhjä",
+                  (len(password1) < 3): "Salasanan pitää olla vähintään 3 merkkiä pitkä",
+                  (len(password1) > 50): "Salasana on liian pitkä",
+                  (password1 != password2): "Salasanat eivät ole samat",}
+        
+        for key, value in errors.items():
+            if key is True:
+                flash(value, "error")
+                return redirect(url_for("register"))
 
         if not users.register(username, password1, 0):
-            return render_template("register.html", error="Rekisteröinti ei onnistunut")
+            flash("Rekisteröinti ei onnistunut", "error")
+            return redirect(url_for("register"))
 
         return redirect("/")
+
+    return render_template("register.html")
 
 @app.route("/logout")
 def logout():
@@ -140,49 +124,46 @@ def admin():
 @app.route("/add-restaurant", methods=["GET", "POST"])
 def add_restaurant():
     users.require_role(0)
-    if request.method == "GET":
-        return render_template("add-restaurant.html")
 
     if request.method == "POST":
         users.check_csrf()
 
         restaurant_name = request.form["restaurant_name"]
-        if restaurant_name == "":
-            return render_template("add-restaurant.html", error="Ravintolan nimi ei voi olla tyhjä")
-        if len(restaurant_name) > 50:
-            return render_template("add-restaurant.html", error="Ravintolan nimi on liian pitkä")
-
         latitude = request.form["latitude"]
-        if latitude == "":
-            return render_template("add-restaurant.html", error="Leveyspiiri ei voi olla tyhjä")
         try:
             float(latitude)
-        except:
-            return render_template("add-restaurant.html", error="Leveyspiirin pitää olla numero")
-        if not 60 < float(latitude) < 70:
-            return render_template("add-restaurant.html",
-                                   error="Suomen leveyspiirit ovat 60-70 välillä")
-
+        except (ValueError, TypeError):
+            flash("Leveyspiirin pitää olla numero", "error")
+            return redirect(url_for("add_restaurant"))
         longitude = request.form["longitude"]
-        if longitude == "":
-            return render_template("add-restaurant.html", error="Pituuspiiri ei voi olla tyhjä")
         try:
             float(longitude)
-        except:
-            return render_template("add-restaurant.html", error="Pituuspiirin pitää olla numero")
-        if not 22 < float(longitude) < 31:
-            return render_template("add-restaurant.html",
-                                   error="Suomen pituuspiirit ovat 22-31 välillä")
-
+        except (ValueError, TypeError):
+            flash("Pituuspiiriin pitää olla numero")
+            return redirect(url_for("add_restaurant"))
         description = request.form["description"]
-        if len(description) > 500:
-            return render_template("add-restaurant.html",
-                                   error="Ravintolan esittely on liian pitkä")
+
+        errors = {(restaurant_name == ""): "Ravintolan nimi ei voi olla tyhjä",
+                  (len(restaurant_name) > 50): "Ravintolan nimi on liian pitkä",
+                  (latitude == ""): "Leveyspiiri ei voi olla tyhjä",
+                  (not 60 < float(latitude) < 70): "Suomen leveyspiirit ovat 60-70 välillä",
+                  (longitude == ""): "Pituuspiiri ei voi olla tyhjä",
+                  (not 22 < float(longitude) < 31): "Suomen pituuspiirit ovat 22-31 välillä",
+                  (len(description) > 500): "Ravintolan esittely on liian pitkä",}
+        
+        for key, value in errors.items():
+            if key is True:
+                flash(value, "error")
+                return redirect(url_for("add_restaurant"))
 
         if not restaurants.add_restaurant(restaurant_name, latitude, longitude, description):
-            return render_template("add-restaurant.html", error="Tallennus ei onnistunut")
+            flash("Tallennus ei onnistunut", "error")
+            return redirect(url_for("add_restaurant"))
 
-        return render_template("admin.html", message="Tallennus onnistui")
+        flash("Tallennus onnistui", "message")
+        return redirect(url_for("admin"))
+
+    return render_template("add-restaurant.html")
 
 @app.route("/manage-groups", methods=["GET", "POST"])
 def manage_groups():
@@ -384,7 +365,7 @@ def manage_users():
                 return render_template("manage-users.html",
                                        admin_users=admin_users,
                                        basic_users=basic_users)
-  
+
 @app.route("/manage-restaurants", methods=["GET", "POST"])
 def manage_restaurants():
     users.require_role(0)
@@ -428,7 +409,7 @@ def manage_restaurants():
 def manage_restaurant(id):
     users.require_role(0)
 
-    id, name, avg_stars, description, latitude, longitude = restaurants.get_restaurant_basic_info(id)
+    id, name, avg_stars, descr, latitude, longitude = restaurants.get_restaurant_basic_info(id)
     information = restaurants.get_restaurant_extra_info(id)
     restaurant_comments = restaurants.get_restaurant_comments(id)
     if request.method == "GET":
@@ -436,7 +417,7 @@ def manage_restaurant(id):
                                id=id,
                                name=name,
                                stars=avg_stars,
-                               description=description,
+                               description=descr,
                                latitude=latitude,
                                longitude=longitude,
                                comments=restaurant_comments,
@@ -454,7 +435,7 @@ def manage_restaurant(id):
                                            id=id,
                                            name=name,
                                            stars=avg_stars,
-                                           description=description,
+                                           description=descr,
                                            latitude=latitude,
                                            longitude=longitude,
                                            comments=restaurant_comments,
@@ -470,7 +451,7 @@ def manage_restaurant(id):
                                            id=id,
                                            name=name,
                                            stars=avg_stars,
-                                           description=description,
+                                           description=descr,
                                            latitude=latitude,
                                            longitude=longitude,
                                            comments=restaurant_comments,
@@ -486,7 +467,7 @@ def manage_restaurant(id):
                                            id=id,
                                            name=name,
                                            stars=avg_stars,
-                                           description=description,
+                                           description=descr,
                                            latitude=latitude,
                                            longitude=longitude,
                                            comments=restaurant_comments,
@@ -497,7 +478,7 @@ def manage_restaurant(id):
                                            id=id,
                                            name=name,
                                            stars=avg_stars,
-                                           description=description,
+                                           description=descr,
                                            latitude=latitude,
                                            longitude=longitude,
                                            comments=restaurant_comments,
@@ -508,7 +489,7 @@ def manage_restaurant(id):
                                            id=id,
                                            name=name,
                                            stars=avg_stars,
-                                           description=description,
+                                           description=descr,
                                            latitude=latitude,
                                            longitude=longitude,
                                            comments=restaurant_comments,
@@ -519,7 +500,7 @@ def manage_restaurant(id):
                                            id=id,
                                            name=name,
                                            stars=avg_stars,
-                                           description=description,
+                                           description=descr,
                                            latitude=latitude,
                                            longitude=longitude,
                                            comments=restaurant_comments,
@@ -532,7 +513,7 @@ def manage_restaurant(id):
                                            id=id,
                                            name=name,
                                            stars=avg_stars,
-                                           description=description,
+                                           description=descr,
                                            latitude=latitude,
                                            longitude=longitude,
                                            comments=restaurant_comments,
@@ -546,7 +527,7 @@ def manage_restaurant(id):
                                            id=id,
                                            name=name,
                                            stars=avg_stars,
-                                           description=description,
+                                           description=descr,
                                            latitude=latitude,
                                            longitude=longitude,
                                            comments=restaurant_comments,
@@ -557,7 +538,7 @@ def manage_restaurant(id):
                                            id=id,
                                            name=name,
                                            stars=avg_stars,
-                                           description=description,
+                                           description=descr,
                                            latitude=latitude,
                                            longitude=longitude,
                                            comments=restaurant_comments,
@@ -570,7 +551,7 @@ def manage_restaurant(id):
                                            id=id,
                                            name=name,
                                            stars=avg_stars,
-                                           description=description,
+                                           description=descr,
                                            latitude=latitude,
                                            longitude=longitude,
                                            comments=restaurant_comments,
@@ -583,7 +564,7 @@ def manage_restaurant(id):
                                            id=id,
                                            name=name,
                                            stars=avg_stars,
-                                           description=description,
+                                           description=descr,
                                            latitude=latitude,
                                            longitude=longitude,
                                            comments=restaurant_comments,
@@ -594,7 +575,7 @@ def manage_restaurant(id):
                                            id=id,
                                            name=name,
                                            stars=avg_stars,
-                                           description=description,
+                                           description=descr,
                                            latitude=latitude,
                                            longitude=longitude,
                                            comments=restaurant_comments,
@@ -607,7 +588,7 @@ def manage_restaurant(id):
                                            id=id,
                                            name=name,
                                            stars=avg_stars,
-                                           description=description,
+                                           description=descr,
                                            latitude=latitude,
                                            longitude=longitude,
                                            comments=restaurant_comments,
@@ -620,7 +601,7 @@ def manage_restaurant(id):
                                            id=id,
                                            name=name,
                                            stars=avg_stars,
-                                           description=description,
+                                           description=descr,
                                            latitude=latitude,
                                            longitude=longitude,
                                            comments=restaurant_comments,
@@ -631,7 +612,7 @@ def manage_restaurant(id):
                                            id=id,
                                            name=name,
                                            stars=avg_stars,
-                                           description=description,
+                                           description=descr,
                                            latitude=latitude,
                                            longitude=longitude,
                                            comments=restaurant_comments,
@@ -644,7 +625,7 @@ def manage_restaurant(id):
                                            id=id,
                                            name=name,
                                            stars=avg_stars,
-                                           description=description,
+                                           description=descr,
                                            latitude=latitude,
                                            longitude=longitude,
                                            comments=restaurant_comments,
@@ -660,7 +641,7 @@ def manage_restaurant(id):
                                            id=id,
                                            name=name,
                                            stars=avg_stars,
-                                           description=description,
+                                           description=descr,
                                            latitude=latitude,
                                            longitude=longitude,
                                            comments=restaurant_comments,
