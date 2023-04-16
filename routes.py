@@ -418,6 +418,7 @@ def manage_restaurant(id):
                 return redirect(url_for("manage_restaurant", id=id))
 
             case "Tallenna tiedot":
+                restaurant_id = request.form["restaurant_id"]
                 restaurant_name_new = request.form["restaurant_name"]
                 latitude_new = request.form["latitude"]
                 longitude_new = request.form["longitude"]
@@ -448,10 +449,11 @@ def manage_restaurant(id):
                         flash(value, "error")
                         return redirect(url_for("manage_restaurant", id=id))
 
-                if not restaurants.add_restaurant(restaurant_name_new,
-                                                  latitude_new,
-                                                  longitude_new,
-                                                  description_new):
+                if not restaurants.update_restaurant(restaurant_id,
+                                                     restaurant_name_new,
+                                                     latitude_new,
+                                                     longitude_new,
+                                                     description_new):
                     flash("Tallennus ei onnistunut", "error")
 
                 flash("Tallennus onnistui", "message")

@@ -22,6 +22,7 @@
         <textarea name="description" rows="3" cols="40" maxlength="500">{{ description }}</textarea>
         <p>
         <input type="submit" name="action" value="Tallenna tiedot">
+        <input type="hidden" name="restaurant_id" value="{{ id }}">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     </form>
 
