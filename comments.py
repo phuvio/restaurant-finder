@@ -6,12 +6,14 @@ def add_comment(restaurant_id, user_id, stars, comment):
     sql = text("""INSERT INTO comments
                   (restaurant_id, user_id, stars, comment)
                   VALUES 
-                  (:restaurant_id, :user_id, :stars, :comment)""")
+                  (:restaurant_id, :user_id, :stars, :comment)
+                  RETURNING id""")
     db.session.execute(sql, {"restaurant_id":restaurant_id,
                              "user_id":user_id,
                              "stars":stars,
                              "comment":comment})
     db.session.commit()
+    return id
 
 def remove_comment(comment_id):
     sql = text("""DELETE FROM comments

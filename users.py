@@ -81,3 +81,9 @@ def remove_user(users_id):
     db.session.execute(sql, {"id":users_id})
     db.session.commit()
     return id
+
+def get_user_name(username):
+    sql = text("""SELECT 1
+                  FROM users
+                  WHERE username=:username""")
+    return db.session.execute(sql, {"username":username}).fetchone()
