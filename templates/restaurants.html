@@ -13,8 +13,7 @@
         Haettava teksti: 
         <br>
         <input type="text" name="search_string" minlength="1" maxlength="20">
-        <p>
-        <input type="submit" name="action" value="Hae">
+        <input type="submit" name="action" id="basic-button" value="Hae">
     </form>
 
     <h2>Hae ravintolaa ryhmästä</h2>
@@ -26,7 +25,7 @@
                 <option value="{{ group.id }}">{{ group.name }}</option>
             {% endfor %}
         </select>
-        <input type="submit" name="action" value="Hae ryhmää">
+        <input type="submit" name="action" id="basic-button" value="Hae ryhmää">
     </form>
 
     {% if found_restaurants %}

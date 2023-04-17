@@ -31,7 +31,7 @@
     <br>
     {% if session.user_username %}
         <form action="/restaurant/{{ res_id }}" method="post">
-            Anna arvosana: <br>
+            <h3>Anna arvosana:</h3> <br>
             <select name="stars">
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -43,11 +43,13 @@
             Kommentti: <br>
             <textarea name="comment" rows="3" cols="40" maxlength="500"></textarea>
             <p>
-            <input type="submit" value="Luo arvostelu">
+            <input type="submit" id="basic-button" value="Luo arvostelu">
             <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         </form>
     {% endif %}
 
-    <a href="/restaurants">Palaa takaisin</a>
+    <footer>
+        <a href="/restaurants" class="footerbutton">Palaa takaisin</a>
+    </footer>
 
 {% endblock %}

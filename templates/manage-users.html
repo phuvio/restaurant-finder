@@ -15,7 +15,7 @@
                 <option value="{{ user.id }}">{{ user.username }}</option>
             {% endfor %}
         </select>
-        <input type="submit" name="action" value="Poista käyttäjä">
+        <input type="submit" name="action" id="basic-button" value="Poista käyttäjä">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     </form>
 
@@ -27,7 +27,7 @@
             <p>
                 <form action="/manage-users" method="post">
                     {{ user.username }}
-                    <input type="submit" name="action" value="Muuta perustasolle">
+                    <input type="submit" name="action" id="basic-button" value="Muuta perustasolle">
                     <input type="hidden" name="admin_id" value="{{ user.id }}">
                     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
                 </form>
@@ -41,7 +41,7 @@
             <p>
                 <form action="/manage-users" method="post">
                     {{ user.username }}
-                    <input type="submit" name="action" value="Muuta pääkäyttäjäksi">
+                    <input type="submit" name="action" id="basic-button" value="Muuta pääkäyttäjäksi">
                     <input type="hidden" name="basic_id" value="{{ user.id }}">
                     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
                 </form>
@@ -50,7 +50,9 @@
     {% endif %}
 
     <br>
-    <a href="/admin">Takaisin ylläpitoon</a>   
-    <a href="/restaurants">Takaisin pääsivulle</a>
+    <footer>
+        <a href="/admin" class="footerbutton">Takaisin ylläpitoon</a>   
+        <a href="/restaurants" class="footerbutton">Takaisin pääsivulle</a>
+    </footer>
 
 {% endblock %}

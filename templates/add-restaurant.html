@@ -13,12 +13,14 @@
         Ravintolan esittely: <br>
         <textarea name="description" rows="3" cols="40" maxlength="500"></textarea>
         <p>
-        <input type="submit" value="Luo ravintola">
+        <input type="submit" id="basic-button" value="Luo ravintola">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     </form>
     
     <br>
-    <a href="/admin">Takaisin ylläpitoon</a>    
-    <a href="/restaurants">Takaisin pääsivulle</a>
+    <footer>
+        <a href="/admin" class="footerbutton">Takaisin ylläpitoon</a>    
+        <a href="/restaurants" class="footerbutton">Takaisin pääsivulle</a>
+    </footer>
 
 {% endblock %}

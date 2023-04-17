@@ -1,0 +1,118 @@
+body {
+    margin: auto;
+    max-width: 45em;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background-color: ivory;
+}
+
+nav, footer {
+    display: inline-block;
+    padding: 0 .5em;
+    margin: .5em;
+    text-align: center;
+}
+
+.headerbutton, .footerbutton, .contentbutton {
+    text-decoration: none;
+    color: #3b444b;
+    padding: .3em 1em;
+    border-radius: .5em;
+    text-align: center;
+    border: 1px solid;
+}
+
+.contentbutton {
+    margin: 10px;
+    line-height: 3em;
+    background-color: #fbf2c7;
+}
+
+.headerbutton, .footerbutton {
+    background-color: #ded299;
+}
+
+.headerbutton {
+    margin: 2em;
+}
+
+.headerbutton:hover, .footerbutton:hover, .contentbutton:hover, #basic-button:hover {
+    background-color: #c2b886;
+}
+
+#basic-button {
+    text-decoration: none;
+    min-width: 80px;
+    color: #3b444b;
+    padding: 2px 7px;
+    border-radius: .5em;
+    text-align: center;
+    border: 1px solid;
+    margin: 10px;
+    line-height: 2em;
+    background-color: #fbf2c7;
+}
+
+#Header {
+    z-index: -1;
+    position: absolute;
+}
+
+#HeaderText {
+    position: absolute;
+    z-index: 1;
+}
+
+.content {
+    background: white;
+    padding: 1.5em 2em;
+ } 
+
+.google-map {
+    max-width: 600px;
+    max-height: 400px;
+    margin: 10px;
+}
+
+.info, .message, .error {
+    border: 1px solid;
+    margin: 10px 0px;
+    padding: 12px 10px 12px 50px;
+    background-repeat: no-repeat;
+    background-position: 10px center;
+}
+
+.info {
+    color: #00529B;
+    background-color: #BDE5F8;
+    background-image: url('https://i.imgur.com/ilgqWuX.png');
+}
+
+.message {
+    color: #4F8A10;
+    background-color: #DFF2BF;
+    background-image: url('https://i.imgur.com/Q9BGTuy.png');
+}
+
+.error {
+    color: #D8000C;
+    background-color: #FFBABA;
+    background-image: url('https://i.imgur.com/GnyDvKN.png');
+    background-position: 100% 100%;
+    background-size: auto;
+    background-size: cover;
+}
+
+#hideMeAfter5Seconds {
+    animation: hideAnimation 0s ease-in 5s;
+    animation-fill-mode: forwards;
+  }
+  
+@keyframes hideAnimation {
+    to {
+      visibility: hidden;
+      width: 0;
+      height: 0;
+      margin: 0;
+      padding: 0;
+    }
+  }

@@ -21,7 +21,7 @@
         Ravintolan esittely: <br>
         <textarea name="description" rows="3" cols="40" maxlength="500">{{ description }}</textarea>
         <p>
-        <input type="submit" name="action" value="Tallenna tiedot">
+        <input type="submit" name="action" id="basic-button" value="Tallenna tiedot">
         <input type="hidden" name="restaurant_id" value="{{ id }}">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     </form>
@@ -33,7 +33,7 @@
     <form action="/manage-restaurant/{{ id }}" method="post">
         Lisätiedon otsikko: <input type="text" name="key" maxlength="50"> <br>
         Lisätieto: <input type="text" name="value" maxlength="500"> <br>
-        <input type="submit" name="action" value="Lisää lisätieto">
+        <input type="submit" name="action" id="basic-button" value="Lisää lisätieto">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     </form>
     <br>
@@ -42,7 +42,7 @@
         <h3>{{ info.key }}</h3>
         <form action="/manage-restaurant/{{ id }}" method="post">
             {{ info.value }}
-            <input type="submit" name="action" value="Poista lisätieto">
+            <input type="submit" name="action" id="basic-button" value="Poista lisätieto">
             <input type="hidden" name="info_id" value="{{ info.id }}">
             <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         </form>
@@ -54,7 +54,7 @@
         {% for comment in comments %}
             <form action="/manage-restaurant/{{ id }}" method="post">
                 {{ comment.username }}: {{ comment.stars }} {{ comment.comment }}
-                <input type="submit" name="action" value="Poista kommentti">
+                <input type="submit" name="action" id="basic-button" value="Poista kommentti">
                 <input type="hidden" name="restaurant_id" value="{{ id }}">
                 <input type="hidden" name="comment_id" value="{{ comment.comment_id }}">
                 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
@@ -65,8 +65,10 @@
     {% endif %}
 
     <br>
-    <a href="/manage-restaurants">Takaisin hallinnoi ravintoloita</a>
-    <a href="/admin">Takaisin ylläpitoon</a>   
-    <a href="/restaurants">Takaisin pääsivulle</a>
+    <footer>
+        <a href="/manage-restaurants" class="footerbutton">Takaisin hallinnoi ravintoloita</a>
+        <a href="/admin" class="footerbutton">Takaisin ylläpitoon</a>   
+        <a href="/restaurants" class="footerbutton">Takaisin pääsivulle</a>
+    </footer>
 
 {% endblock %}

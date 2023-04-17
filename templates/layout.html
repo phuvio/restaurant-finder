@@ -9,25 +9,34 @@
     {% endif %}
 
 </head>
-<h1>Etsi ravintola</h1>
+<div id="wrapperHead">
+    <div id="Header">
+        <img src="/static/header.jpg">
+    </div>
+    <div id="HeaderText">
+        <h1>Etsi ravintola</h1>
+    </div>
+</div>
+<br><br><br><br>
 <hr>
-{% if session.user_id %}
-    Olet kirjautunut sisään nimellä <b>{{ session.user_username }}</b>. <a href="/logout">Kirjaudu ulos</a>
-{% else %}
-    Et ole kirjautunut sisään. <a href="/login">Kirjaudu sisään</a>
-{% endif %}
-
-{% if session.user_role == 0 %}
-    <a href="/admin">Ylläpito</a>
-{% endif %}
-
-{% with messages = get_flashed_messages() %}
-    {% if messages %}
-        {% for msg in messages %}
-            <p class="{{ category }}">{{ msg }}</p>
-        {% endfor %}
+<nav>
+    {% if session.user_id %}
+        Olet kirjautunut sisään nimellä <b>{{ session.user_username }}</b>. 
+        <a href="/logout" class="headerbutton">Kirjaudu ulos</a>
     {% else %}
-        <p><br></p>
+        Et ole kirjautunut sisään. <a href="/login" class="headerbutton">Kirjaudu sisään</a>
+    {% endif %}
+
+    {% if session.user_role == 0 %}
+        <a href="/admin" class="headerbutton">Ylläpito</a>
+    {% endif %}
+</nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, msg in messages %}
+            <p class="{{ category }}" id="hideMeAfter5Seconds">{{ msg }}</p>
+        {% endfor %}
     {% endif %}
 {% endwith %}
 

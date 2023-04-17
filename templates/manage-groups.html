@@ -21,7 +21,7 @@
                 <option value="{{ group.id }}">{{ group.name }}</option>
             {% endfor %}
         </select>
-        <input type="submit" name="action" value="Poista ryhmä">
+        <input type="submit" name="action" id="basic-button" value="Poista ryhmä">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     </form>
 
@@ -34,7 +34,7 @@
                 <option value="{{ group.id }}">{{ group.name }}</option>
             {% endfor %}
         </select>
-        <input type="submit" name="action" value="Palauta ryhmä">
+        <input type="submit" name="action" id="basic-button" value="Palauta ryhmä">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     </form>
 
@@ -48,7 +48,7 @@
                 <option value="{{ group.id }}">{{ group.name }}</option>
             {% endfor %}
         </select>
-        <input type="submit" name="action" value="Hae ryhmää">
+        <input type="submit" name="action" id="basic-button" value="Hae ryhmää">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     </form>
 
@@ -58,7 +58,7 @@
             <p>
                 <form action="/manage-groups" method="post">
                     {{ restaurant.name }}
-                    <input type="submit" name="action" value="Poista ryhmästä">
+                    <input type="submit" name="action" id="basic-button" value="Poista ryhmästä">
                     <input type="hidden" name="group_id" value="{{ group_id }}">
                     <input type="hidden" name="restaurant_id" value="{{ restaurant.id }}">
                     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
@@ -73,7 +73,7 @@
             <p>
                 <form action="/manage-groups" method="post">
                     {{ restaurant.name }}
-                    <input type="submit" name="action" value="Lisää ryhmään">
+                    <input type="submit" name="action" id="basic-button" value="Lisää ryhmään">
                     <input type="hidden" name="group_id" value="{{ group_id }}">
                     <input type="hidden" name="restaurant_id" value="{{ restaurant.id }}">
                     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
@@ -83,7 +83,9 @@
     {% endif %}
     
     <br>
-    <a href="/admin">Takaisin ylläpitoon</a>   
-    <a href="/restaurants">Takaisin pääsivulle</a>
+    <footer>
+        <a href="/admin" class="footerbutton">Takaisin ylläpitoon</a>   
+        <a href="/restaurants" class="footerbutton">Takaisin pääsivulle</a>
+    </footer>
 
 {% endblock %}
