@@ -7,14 +7,12 @@
 
     {% if visible_restaurants %}
         {% for restaurant in visible_restaurants %}
-            <p>
-                <form action="/manage-restaurants" method="post">
-                    <a href="/manage-restaurant/{{ restaurant.id }}">{{ restaurant.name }}</a>
-                    <input type="submit" name="action" id="basic-button" value="Poista näkyvistä">
-                    <input type="hidden" name="visible_id" value="{{ restaurant.id }}">
-                    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-                </form>
-            </p>
+            <form action="/manage-restaurants" method="post">
+                <a href="/manage-restaurant/{{ restaurant.id }}">{{ restaurant.name }}</a>
+                <input type="submit" name="action" id="basic-button" value="Poista näkyvistä">
+                <input type="hidden" name="visible_id" value="{{ restaurant.id }}">
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+            </form>
         {% endfor %}
     {% else %}
         Ei yhtään ravintolaa
@@ -23,14 +21,12 @@
     <h3>Näkyvistä poistetut ravintolat</h3>
     {% if hidden_restaurants %}
         {% for restaurant in hidden_restaurants %}
-            <p>
-                <form action="/manage-restaurants" method="post">
-                    <a href="/manage-restaurant/{{ restaurant.id }}">{{ restaurant.name }}</a>
-                    <input type="submit" name="action" id="basic-button" value="Palauta näkyviin">
-                    <input type="hidden" name="hidden_id" value="{{ restaurant.id }}">
-                    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-                </form>
-            </p>
+            <form action="/manage-restaurants" method="post">
+                <a href="/manage-restaurant/{{ restaurant.id }}">{{ restaurant.name }}</a>
+                <input type="submit" name="action" id="basic-button" value="Palauta näkyviin">
+                <input type="hidden" name="hidden_id" value="{{ restaurant.id }}">
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+            </form>
         {% endfor %}
     {% else %}
         Ei yhtään ravintolaa

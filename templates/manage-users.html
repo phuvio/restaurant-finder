@@ -24,28 +24,24 @@
     {% if admin_users %}
         <h3>Pääkäyttäjätason käyttäjät</h3>
         {% for user in admin_users %}
-            <p>
-                <form action="/manage-users" method="post">
-                    {{ user.username }}
-                    <input type="submit" name="action" id="basic-button" value="Muuta perustasolle">
-                    <input type="hidden" name="admin_id" value="{{ user.id }}">
-                    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-                </form>
-            </p>
+            <form action="/manage-users" method="post">
+                {{ user.username }}
+                <input type="submit" name="action" id="basic-button" value="Muuta perustasolle">
+                <input type="hidden" name="admin_id" value="{{ user.id }}">
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+            </form>
         {% endfor %}
     {% endif %}
 
     {% if basic_users %}
         <h3>Perustason käyttäjät</h3>
         {% for user in basic_users %}
-            <p>
-                <form action="/manage-users" method="post">
-                    {{ user.username }}
-                    <input type="submit" name="action" id="basic-button" value="Muuta pääkäyttäjäksi">
-                    <input type="hidden" name="basic_id" value="{{ user.id }}">
-                    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-                </form>
-            </p>
+            <form action="/manage-users" method="post">
+                {{ user.username }}
+                <input type="submit" name="action" id="basic-button" value="Muuta pääkäyttäjäksi">
+                <input type="hidden" name="basic_id" value="{{ user.id }}">
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+            </form>
         {% endfor %}
     {% endif %}
 
