@@ -30,8 +30,11 @@ def show_restaurants():
             found_restaurants = restaurants.get_restaurants_in_group(group_id)
         else:
             search_string = request.form["search_string"].lower()
+            if search_string == "":
+                flash("Anna hakusana", "error")
+                return redirect(url_for("show_restaurants"))
             if len(search_string) < 1 or len(search_string) > 20:
-                flash("Hakusana voi olla 1-20 merkkiä pitkä")
+                flash("Hakusana voi olla 1-20 merkkiä pitkä", "error")
                 return redirect(url_for("show_restaurants"))
             found_restaurants = restaurants.get_restaurants_by_text(search_string)
 
@@ -80,7 +83,7 @@ def login():
         password = request.form["password"]
 
         if not users.login(username, password):
-            flash("Väärä käyttäjätunnus tai salasana")
+            flash("Väärä käyttäjätunnus tai salasana", "error")
             return redirect("/login")
         return redirect("/")
 
@@ -94,22 +97,19 @@ def register():
         password1 = request.form["password1"]
         password2 = request.form["password2"]
 
-        errors = {(len(username) < 3 or len(username) > 20):
-                  "Käyttäjätunnuksen tulee olla 3-20 merkkiä",
-                  (password1 == ""): "Salasana on tyhjä",
-                  (len(password1) < 3): "Salasanan pitää olla vähintään 3 merkkiä pitkä",
-                  (len(password1) > 50): "Salasana on liian pitkä",
-                  (password1 != password2): "Salasanat eivät ole samat",
-                  (users.get_user_name(username) != 1): "Käyttäjätunnus on jo varattu",}
+        errors = [((len(username) < 3 or len(username) > 20),
+                  "Käyttäjätunnuksen tulee olla 3-20 merkkiä"),
+                  ((password1 == ""), "Salasana on tyhjä"),
+                  ((len(password1) < 3), "Salasanan pitää olla vähintään 3 merkkiä pitkä"),
+                  ((len(password1) > 50), "Salasana on liian pitkä"),
+                  ((password1 != password2), "Salasanat eivät ole samat"),
+                  ((users.get_user_name(username) != 1), "Käyttäjätunnus on jo varattu"),
+                  ((not users.register(username, password1, 0), "Rekisteröinti ei onnistunut")),]
 
-        for key, value in errors.items():
-            if key is True:
-                flash(value, "error")
+        for err in errors:
+            if err[0] is True:
+                flash(err[1], "error")
                 return redirect(url_for("register"))
-
-        if not users.register(username, password1, 0):
-            flash("Rekisteröinti ei onnistunut", "error")
-            return redirect(url_for("register"))
 
         return redirect("/")
 
@@ -149,25 +149,23 @@ def add_restaurant():
             return redirect(url_for("add_restaurant"))
         description = request.form["description"]
 
-        errors = {(restaurant_name == ""): "Ravintolan nimi ei voi olla tyhjä",
-                  (len(restaurant_name) > 50): "Ravintolan nimi on liian pitkä",
-                  (latitude == ""): "Leveyspiiri ei voi olla tyhjä",
-                  (not 60 < float(latitude) < 70): "Suomen leveyspiirit ovat 60-70 välillä",
-                  (longitude == ""): "Pituuspiiri ei voi olla tyhjä",
-                  (not 22 < float(longitude) < 31): "Suomen pituuspiirit ovat 22-31 välillä",
-                  (len(description) > 500): "Ravintolan esittely on liian pitkä",}
+        errors = [((restaurant_name == ""), "Ravintolan nimi ei voi olla tyhjä"),
+                  ((len(restaurant_name) > 50), "Ravintolan nimi on liian pitkä"),
+                  ((latitude == ""), "Leveyspiiri ei voi olla tyhjä"),
+                  ((not 60 < float(latitude) < 70), "Suomen leveyspiirit ovat 60-70 välillä"),
+                  ((longitude == ""), "Pituuspiiri ei voi olla tyhjä"),
+                  ((not 22 < float(longitude) < 31), "Suomen pituuspiirit ovat 22-31 välillä"),
+                  ((len(description) > 500), "Ravintolan esittely on liian pitkä"),
+                  ((not restaurants.add_restaurant(restaurant_name,
+                                                   latitude,
+                                                   longitude,
+                                                   description)),
+                                                   "Tallennus ei onnistunut"),]
 
-        for key, value in errors.items():
-            if key is True:
-                flash(value, "error")
+        for err in errors:
+            if err[0] is True:
+                flash(err[1], "error")
                 return redirect(url_for("add_restaurant"))
-
-        if not restaurants.add_restaurant(restaurant_name,
-                                          latitude,
-                                          longitude,
-                                          description):
-            flash("Tallennus ei onnistunut", "error")
-            return redirect(url_for("add_restaurant"))
 
         flash("Tallennus onnistui", "message")
         return redirect(url_for("admin"))
@@ -297,17 +295,15 @@ def manage_users():
         match request.form["action"]:
             case "Poista käyttäjä":
                 user_id = request.form.get("select_user")
-                if user_id == "":
-                    flash("Valitse käyttäjä", "error")
-                    return redirect(url_for("manage_users"))
+                errors = [((user_id == ""), "Valitse käyttäjä"),
+                          ((not comments.remove_users_all_comments(user_id)),
+                           "Käyttäjän poistaminen epäonnistui"),
+                          ((not users.remove_user(user_id)), "Käyttäjän poistaminen epäonnistui"),]
 
-                if not comments.remove_users_all_comments(user_id):
-                    flash("Käyttäjän poistaminen epäonnistui", "error")
-                    return redirect(url_for("manage_users"))
-
-                if not users.remove_user(user_id):
-                    flash("Käyttäjän poistaminen epäonnistui", "error")
-                    return redirect(url_for("manage_users"))
+                for err in errors:
+                    if err[0] is True:
+                        flash(err[1], "error")
+                        return redirect(url_for("manage_users"))
 
                 flash("Käyttäjän poistaminen onnistui", "message")
                 return redirect(url_for("manage_users"))
@@ -403,16 +399,16 @@ def manage_restaurant(id):
                 key = request.form.get("key")
                 value = request.form.get("value")
 
-                errors = {(key == ""): "Lisätiedon otsikko ei voi olla tyhjä",
-                          (len(key) > 50): "Lisätiedon otsikko on liian pitkä",
-                          (value == ""): "Lisätieto ei voi olla tyhjä",
-                          (len(value) > 500): "Lisätieto on liian pitkä",
-                          (not restaurants.add_extra_information(id, key, value)):
-                                                "Lisätiedon tallennus epäonnistui",}
+                errors = [((key == ""), "Lisätiedon otsikko ei voi olla tyhjä"),
+                          ((len(key) > 50), "Lisätiedon otsikko on liian pitkä"),
+                          ((value == ""), "Lisätieto ei voi olla tyhjä"),
+                          ((len(value) > 500), "Lisätieto on liian pitkä"),
+                          ((not restaurants.add_extra_information(id, key, value)),
+                           "Lisätiedon tallennus epäonnistui"),]
 
-                for key, value in errors.items():
-                    if key is True:
-                        flash(value, "error")
+                for err in errors:
+                    if err[0] is True:
+                        flash(err[1], "error")
                         return redirect(url_for("manage_restaurant", id=id))
 
                 return redirect(url_for("manage_restaurant", id=id))
@@ -434,27 +430,26 @@ def manage_restaurant(id):
                     flash("Pituuspiiriin pitää olla numero")
                     return redirect(url_for("manage_restaurant", id=id))
 
-                errors = {(restaurant_name_new == ""): "Ravintolan nimi ei voi olla tyhjä",
-                          (len(restaurant_name_new) > 50): "Ravintolan nimi on liian pitkä",
-                          (latitude_new == ""): "Leveyspiiri ei voi olla tyhjä",
-                          (not 60 < float(latitude_new) < 70):
-                          "Suomen leveyspiirit ovat 60-70 välillä",
-                          (longitude_new == ""): "Pituuspiiri ei voi olla tyhjä",
-                          (not 22 < float(longitude_new) < 31):
-                          "Suomen pituuspiirit ovat 22-31 välillä",
-                          (len(description_new) > 500): "Ravintolan esittely on liian pitkä",}
+                errors = [((restaurant_name_new == ""), "Ravintolan nimi ei voi olla tyhjä"),
+                          ((len(restaurant_name_new) > 50), "Ravintolan nimi on liian pitkä"),
+                          ((latitude_new == ""), "Leveyspiiri ei voi olla tyhjä"),
+                          ((not 60 < float(latitude_new) < 70),
+                          "Suomen leveyspiirit ovat 60-70 välillä"),
+                          ((longitude_new == ""), "Pituuspiiri ei voi olla tyhjä"),
+                          ((not 22 < float(longitude_new) < 31),
+                          "Suomen pituuspiirit ovat 22-31 välillä"),
+                          ((len(description_new) > 500), "Ravintolan esittely on liian pitkä"),
+                          (not restaurants.update_restaurant(restaurant_id,
+                                                             restaurant_name_new,
+                                                             latitude_new,
+                                                             longitude_new,
+                                                             description_new),
+                                                             "Tallennus ei onnistunut")]
 
-                for key, value in errors.items():
-                    if key is True:
-                        flash(value, "error")
+                for err in errors:
+                    if err[0] is True:
+                        flash(err[1], "error")
                         return redirect(url_for("manage_restaurant", id=id))
-
-                if not restaurants.update_restaurant(restaurant_id,
-                                                     restaurant_name_new,
-                                                     latitude_new,
-                                                     longitude_new,
-                                                     description_new):
-                    flash("Tallennus ei onnistunut", "error")
 
                 flash("Tallennus onnistui", "message")
                 return redirect(url_for("manage_restaurant", id=id))
