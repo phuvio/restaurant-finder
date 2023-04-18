@@ -4,7 +4,7 @@
     <h2>{{ name }}</h2>
 
     {% if stars %}
-        Tähtiä {{ stars }}
+        Tähtiä {{ stars }}<br>
     {% endif %}
 
     <br>
@@ -27,24 +27,29 @@
             <p>{{ comment.username }}: {{ comment.stars }} {{ comment.comment }} 
         {% endfor %}
     {% endif %}
-
     <br>
     {% if session.user_username %}
-        <form action="/restaurant/{{ res_id }}" method="post">
-            <h3>Anna arvosana:</h3> <br>
-            <select name="stars">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-            </select>
-            <br>
-            Kommentti: <br>
-            <textarea name="comment" rows="3" cols="40" maxlength="500"></textarea>
-            <p>
-            <input type="submit" id="basic-button" value="Luo arvostelu">
-            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+        <form action="/restaurant/{{ res_id }}" method="post" class="user-comment">
+            <h3>Anna arvosana:</h3>
+            <div class="rate">
+                <input type="radio" id="star5" name="stars" value="5" />
+                <label for="star5" title="text">5 tähteä</label>
+                <input type="radio" id="star4" name="stars" value="4" />
+                <label for="star4" title="text">4 tähteä</label>
+                <input type="radio" id="star3" name="stars" value="3" />
+                <label for="star3" title="text">3 tähteä</label>
+                <input type="radio" id="star2" name="stars" value="2" />
+                <label for="star2" title="text">2 tähteä</label>
+                <input type="radio" id="star1" name="stars" value="1" />
+                <label for="star1" title="text">1 tähti</label>
+            </div>
+            <div class="comment">
+                Kommentti: <br>
+                <textarea name="comment" rows="3" cols="40" maxlength="500"></textarea>
+                <p>
+                <input type="submit" id="basic-button" value="Luo arvostelu">
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+            </div>
         </form>
     {% endif %}
 

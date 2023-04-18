@@ -35,7 +35,7 @@
 {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
         {% for category, msg in messages %}
-            <p class="{{ category }}" id="hideMeAfter5Seconds">{{ msg }}</p>
+            <p class="{{ category }}" id="hideMeAfter3Seconds">{{ msg }}</p>
         {% endfor %}
     {% endif %}
 {% endwith %}
