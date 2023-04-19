@@ -30,6 +30,12 @@ Pääkäyttäjä voi
 - poistaa perustason käyttäjän, jolloin myös käyttäjän kommentit poistetaan
 - muuttaa käyttäjän roolia
 
+Testausta varten uudet käyttäjät rekisteröityvät pääkäyttäjiksi.
+
 ### Tunnetut puutteet
 
-- sivun ulkoasu on tekemättä
+- sivun ulkoasu
+  - tähtiluokituksen antaminen ja kommentit päälleikkäin
+  - hallinnoi yksittäistä ravintolaa layout
+  - lisää ravintola layout
+  - virheilmoitusten kuva
