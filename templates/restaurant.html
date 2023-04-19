@@ -4,10 +4,14 @@
     <h2>{{ name }}</h2>
 
     {% if stars %}
-        Tähtiä {{ stars }}<br>
+        <font size="+3">
+            <i data-star="{{ stars }}"></i>
+        </font>
+    {% else %}
+        Ei arvosteluja
     {% endif %}
 
-    <br>
+    <br><br>
 
     {% if description %}
         {{ description }}
@@ -24,10 +28,11 @@
         <h3>Arvosteluja</h3>
 
         {% for comment in comments %}
-            <p>{{ comment.username }}: {{ comment.stars }} {{ comment.comment }} 
+            <i data-star="{{ comment.stars }}"></i>
+            {{ comment.username }}: {{ comment.comment }} <p>
         {% endfor %}
     {% endif %}
-    <br>
+
     {% if session.user_username %}
         <form action="/restaurant/{{ res_id }}" method="post" class="user-comment">
             <h3>Anna arvosana:</h3>

@@ -54,11 +54,11 @@
         <h3>Ryhmän ravintolat</h3>
         {% for restaurant in found_restaurants %}
             <form action="/manage-groups" method="post">
-                {{ restaurant.name }}
                 <input type="submit" name="action" id="basic-button" value="Poista ryhmästä">
                 <input type="hidden" name="group_id" value="{{ group_id }}">
                 <input type="hidden" name="restaurant_id" value="{{ restaurant.id }}">
                 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                {{ restaurant.name }}
             </form>
         {% endfor %}
     {% endif %}
@@ -67,11 +67,11 @@
         <h3>Ravintolat, jotka eivät ole ryhmässä</h3>
         {% for restaurant in not_in_group_restaurants %}
             <form action="/manage-groups" method="post">
-                {{ restaurant.name }}
                 <input type="submit" name="action" id="basic-button" value="Lisää ryhmään">
                 <input type="hidden" name="group_id" value="{{ group_id }}">
                 <input type="hidden" name="restaurant_id" value="{{ restaurant.id }}">
                 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                {{ restaurant.name }}
             </form>
         {% endfor %}
     {% endif %}

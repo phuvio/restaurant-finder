@@ -4,7 +4,11 @@
     <h2>{{ name }}</h2>
 
     {% if stars %}
-        Tähtiä {{ stars }}
+        <font size="+3">
+            <i data-star="{{ stars }}"></i>
+        </font>
+    {% else %}
+        Ei arvosteluja
     {% endif %}
 
     <br>
