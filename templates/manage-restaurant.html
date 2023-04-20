@@ -17,13 +17,13 @@
 
     <form action="/manage-restaurant/{{ id }}" class="restaurant" method="post">
         <label class="restaurant-label">Nimi:</label>
-        <input type="text" id="name" name="restaurant-name" value="{{ name }}">
+        <input type="text" id="name" name="restaurant_name" value="{{ name }}" title="Pakollinen kenttä">
         <br>
         Sijainti:<br>
         <label class="restaurant-location">Leveyspiiri:</label>
-        <input type="text" id="location" name="latitude" value="{{ latitude }}"><br>
+        <input type="text" id="location" name="latitude" value="{{ latitude }}" title="Pakollinen kenttä"><br>
         <label class="restaurant-location">Pituuspiiri:</label>
-        <input type="text" id="location" name="longitude" value="{{ longitude }}">
+        <input type="text" id="location" name="longitude" value="{{ longitude }}" title="Pakollinen kenttä">
         <br>
         Ravintolan esittely: <br>
         <textarea name="description" rows="3" cols="40" maxlength="500">{{ description }}</textarea>
@@ -39,9 +39,9 @@
 
     <form action="/manage-restaurant/{{ id }}" method="post">
         <label class="restaurant-info">Lisätiedon otsikko:</label>
-        <input type="text" id="extra-info-label" name="key" maxlength="50"><br>
+        <input type="text" id="extra-info-label" name="key" maxlength="50" title="Pakollinen kenttä"><br>
         <label class="restaurant-info">Lisätieto:</label>
-        <textarea id="extra-info-text" name="value" rows="3" cols="40" maxlength="500"></textarea><br>
+        <textarea id="extra-info-text" name="value" rows="3" cols="40" maxlength="500" title="Pakollinen kenttä"></textarea><br>
         <input type="submit" name="action" id="basic-button" value="Lisää lisätieto">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     </form>

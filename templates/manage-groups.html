@@ -6,7 +6,7 @@
     <h3>Lisää ryhmä</h3>
 
     <form action="/manage-groups" method="post">
-        <input type="text" name="group_name" placeholder="Ryhmän nimi">
+        <input type="text" name="group_name" placeholder="Ryhmän nimi" title="Pakollinen kenttä">
         <input type="submit" name="action" id="basic-button" value="Luo ryhmä">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     </form>

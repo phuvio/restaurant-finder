@@ -4,11 +4,14 @@
     <h2>Lisää ravintola</h2>
 
     <form action="/add-restaurant" method="post">
-        Nimi: <br><input type="text" name="restaurant_name">
+        <label class="restaurant-label">Nimi:</label>
+        <input type="text" id="name" name="restaurant_name" title="Pakollinen kenttä">
         <br>
         Sijainti:<br>
-        Leveyspiiri: <input type="text" name="latitude" placeholder="esim. 60.170897"> <br>
-        Pituuspiiri: <input type="text" name="longitude" placeholder="esim. 24.941421">
+        <label class="restaurant-location">Leveyspiiri:</label>
+        <input type="text" id="location" name="latitude" placeholder="esim. 60.170897" title="Pakollinen kenttä"><br>
+        <label class="restaurant-location">Pituuspiiri:</label>
+        <input type="text" id="location" name="longitude" placeholder="esim. 24.941421" title="Pakollinen kenttä">
         <br>
         Ravintolan esittely: <br>
         <textarea name="description" rows="3" cols="40" maxlength="500"></textarea>
