@@ -116,22 +116,19 @@ nav, footer {
 .info {
     color: #00529B;
     background-color: #BDE5F8;
-    background-image: url('https://i.imgur.com/ilgqWuX.png');
+    background-image: url('./info.png');
 }
 
 .message {
     color: #4F8A10;
     background-color: #DFF2BF;
-    background-image: url('https://i.imgur.com/Q9BGTuy.png');
+    background-image: url('./message.png');
 }
 
 .error {
     color: #D8000C;
     background-color: #FFBABA;
-    background-image: url('https://i.imgur.com/GnyDvKN.png');
-    background-position: 100% 100%;
-    background-size: auto;
-    background-size: cover;
+    background-image: url("./error.png");
 }
 
 #hideMeAfter3Seconds {
