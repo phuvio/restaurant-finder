@@ -117,7 +117,7 @@ def change_restaurant_extra_info_visibility(information_id):
     return information_id
 
 def get_restaurants_in_group(group_id):
-    sql = text("""SELECT R.id, R.name, AVG(C.stars)::numeric(10,1) AS avg_stars
+    sql = text("""SELECT R.id, R.name, coalesce(AVG(C.stars)::numeric(10,1), 0) AS avg_stars
                   FROM restaurantsingroups G
                   INNER JOIN restaurants R ON G.restaurant_id=R.id
                   LEFT JOIN comments C ON R.id=C.restaurant_id
@@ -148,7 +148,7 @@ def get_restaurants_not_in_group(group_id):
     return db.session.execute(sql, {"group_id":group_id}).fetchall()
 
 def get_restaurants_by_text(search_string):
-    sql = text("""SELECT R.id, R.name, AVG(C.stars)::numeric(10,1) AS avg_stars
+    sql = text("""SELECT R.id, R.name, coalesce(AVG(C.stars)::numeric(10,1), 0) AS avg_stars
                   FROM restaurants R 
                   LEFT JOIN comments C ON R.id=C.restaurant_id
                   WHERE R.visible=1 AND 
