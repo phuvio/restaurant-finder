@@ -31,11 +31,3 @@ Pääkäyttäjä voi
 - muuttaa käyttäjän roolia
 
 Testausta varten uudet käyttäjät rekisteröityvät pääkäyttäjiksi.
-
-### Tunnetut puutteet
-
-- sivun ulkoasu
-  - tähtiluokituksen antaminen ja kommentit päälleikkäin
-  - hallinnoi yksittäistä ravintolaa layout
-  - lisää ravintola layout
-  - virheilmoitusten kuva
