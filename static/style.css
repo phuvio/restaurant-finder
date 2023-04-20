@@ -72,6 +72,39 @@ nav, footer {
     margin: 10px;
 }
 
+.restaurant {
+    overflow: hidden;
+}
+
+.restaurant-label, .restaurant-location {
+    float: left;
+    width: 140px;
+    padding-right: 24px;
+}
+
+.restaurant-location {
+    text-align: right;
+}
+
+.restaurant-info {
+    float: left;
+    text-align: right;
+    width: 155px;
+    padding-right: 24px;
+}
+
+#location {
+    width: 150px;
+}
+
+#extra-info-label {
+    width: 200px;
+}
+
+#extra-info-text {
+    width: 300px;
+}
+
 .info, .message, .error {
     border: 1px solid;
     margin: 10px 0px;
