@@ -23,12 +23,11 @@
     {% if session.user_id %}
         Olet kirjautunut sisään nimellä <b>{{ session.user_username }}</b>. 
         <a href="/logout" class="headerbutton">Kirjaudu ulos</a>
+        {% if session.user_role == 0 %}
+            <a href="/admin" class="headerbutton">Ylläpito</a>
+        {% endif %}
     {% else %}
         Et ole kirjautunut sisään. <a href="/login" class="headerbutton">Kirjaudu sisään</a>
-    {% endif %}
-
-    {% if session.user_role == 0 %}
-        <a href="/admin" class="headerbutton">Ylläpito</a>
     {% endif %}
 </nav>
 

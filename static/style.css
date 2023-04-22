@@ -9,7 +9,7 @@ nav, footer {
     display: inline-block;
     padding: 0 .5em;
     margin: .5em;
-    text-align: center;
+    text-align: left;
 }
 
 .headerbutton, .footerbutton, .contentbutton {
