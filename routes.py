@@ -66,6 +66,9 @@ def restaurant(res_id):
         users.check_csrf()
 
         stars = request.form["stars"]
+        if not stars:
+            flash("Anna arvosana klikkaamalla tähtiä", "error")
+            return redirect(url_for("restaurant", res_id=res_id))
         restaurant_comment = request.form["comment"]
         user_id = users.user_id()
         if not comments.add_comment(res_id, user_id, stars, restaurant_comment):
@@ -103,7 +106,7 @@ def register():
                   ((len(password1) < 3), "Salasanan pitää olla vähintään 3 merkkiä pitkä"),
                   ((len(password1) > 50), "Salasana on liian pitkä"),
                   ((password1 != password2), "Salasanat eivät ole samat"),
-                  ((users.get_user_name(username) != 1), "Käyttäjätunnus on jo varattu"),
+                  ((users.get_user_name(username) == 1), "Käyttäjätunnus on jo varattu"),
                   ((not users.register(username, password1, 0), "Rekisteröinti ei onnistunut")),]
 
         for err in errors:
