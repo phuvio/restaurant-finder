@@ -4,7 +4,7 @@ Sovelluksen vaatimusmäärittely ja SQLskeema löytyvät:
 
 - [Vaatimusmäärittely](./documentation/vaatimusmaarittely.md)
 
-## Välipalautus 2
+## Välipalautus 3
 
 Ohjelmaa voi testata: [Löydä ravintola](https://tsoha2023-restaurant-finder.fly.dev/login)
 
@@ -31,3 +31,12 @@ Pääkäyttäjä voi
 - muuttaa käyttäjän roolia
 
 Testausta varten uudet käyttäjät rekisteröityvät pääkäyttäjiksi.
+
+## Tunnetut puutteet
+- siirto Fly.io:hon rikkoi
+  - kartta ei näy
+  - headerin layoutissa Ylläpito-napin paikan
+  - jos jättää kommentin ilman arvosanaa saa virheilmoituksen
+  - uuden käyttäjän rekisteröiminen antaa virheilmoituksen, vaikka rekisteröinti onnistuu
+  - jos tietokanta ei vastaa heti, niin saattaa tulla virheilmoitus
+  
