@@ -33,10 +33,13 @@ Pääkäyttäjä voi
 Testausta varten uudet käyttäjät rekisteröityvät pääkäyttäjiksi.
 
 ## Tunnetut puutteet
-- siirto Fly.io:hon rikkoi
-  - kartta ei näy
-  - headerin layoutissa Ylläpito-napin paikan
-  - jos jättää kommentin ilman arvosanaa saa virheilmoituksen
-  - uuden käyttäjän rekisteröiminen antaa virheilmoituksen, vaikka rekisteröinti onnistuu
-  - jos tietokanta ei vastaa heti, niin saattaa tulla virheilmoitus
-  
+- siirto Fly.io:hon rikkoi kartan eli se ei näy
+  - ongelma on siinä, että käytin Flask GoogleMapsin versiota 0.4.1.1
+  - PYPI:ssä on versio 0.4.1, jolla en saanut karttaa näkyviin
+  - googlaamalla löytyi muitakin, joilla oli sama ongelma ja jotka olivat saaneet kartan näkyviin käyttämällä versiota 0.4.1.1
+  - PYPI:ssä ei ole versiota 0.4.1.1 vaan se täytyy ladata käsin omalle koneella ja asentaa sieltä
+  - kun deployaa buildin Fly.io:hon, niin se ei löydä oikeaa versiota eikä se osaa ladata tuota koneelta asennettua versiota 
+  - jouduin siis peruuttamaan versioon 0.4.1, jolloin karttakin hävisi
+- headerin layoutissa Ylläpito-napin paikan on välillä väärässä paikassa riippuen kuka on kirjautunut sisään
+- jos jättää kommentin ilman arvosanaa saa virheilmoituksen
+- välillä tulee erikoisia virheilmoituksia - johtuuko tietokannan hitaudesta?
