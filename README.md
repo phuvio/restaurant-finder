@@ -40,6 +40,4 @@ Testausta varten uudet käyttäjät rekisteröityvät pääkäyttäjiksi.
   - PYPI:ssä ei ole versiota 0.4.1.1 vaan se täytyy ladata käsin omalle koneella ja asentaa sieltä
   - kun deployaa buildin Fly.io:hon, niin se ei löydä oikeaa versiota eikä se osaa ladata tuota koneelta asennettua versiota 
   - jouduin siis peruuttamaan versioon 0.4.1, jolloin karttakin hävisi
-- headerin layoutissa Ylläpito-napin paikan on välillä väärässä paikassa riippuen kuka on kirjautunut sisään
-- jos jättää kommentin ilman arvosanaa saa virheilmoituksen
 - välillä tulee erikoisia virheilmoituksia - johtuuko tietokannan hitaudesta?
