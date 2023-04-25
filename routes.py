@@ -65,10 +65,12 @@ def restaurant(res_id):
     if request.method == "POST":
         users.check_csrf()
 
-        stars = request.form["stars"]
-        if not stars:
+        try:
+            stars = request.form["stars"]
+        except:
             flash("Anna arvosana klikkaamalla tähtiä", "error")
             return redirect(url_for("restaurant", res_id=res_id))
+
         restaurant_comment = request.form["comment"]
         user_id = users.user_id()
         if not comments.add_comment(res_id, user_id, stars, restaurant_comment):
@@ -105,14 +107,22 @@ def register():
                   ((password1 == ""), "Salasana on tyhjä"),
                   ((len(password1) < 3), "Salasanan pitää olla vähintään 3 merkkiä pitkä"),
                   ((len(password1) > 50), "Salasana on liian pitkä"),
-                  ((password1 != password2), "Salasanat eivät ole samat"),
-                  ((users.get_user_name(username) == 1), "Käyttäjätunnus on jo varattu"),
-                  ((not users.register(username, password1, 0), "Rekisteröinti ei onnistunut")),]
+                  ((password1 != password2), "Salasanat eivät ole samat"),]
 
         for err in errors:
             if err[0] is True:
                 flash(err[1], "error")
                 return redirect(url_for("register"))
+
+        if users.get_user_name(username):
+            flash("Käyttäjätunnus on jo varattu", "error")
+            return redirect(url_for("register"))
+
+        try:
+            users.register(username, password1, 0)
+        except:
+            flash("Rekisteröinti ei onnistunut", "error")
+            return render_template("register.html")
 
         return redirect("/")
 
@@ -158,17 +168,18 @@ def add_restaurant():
                   ((not 60 < float(latitude) < 70), "Suomen leveyspiirit ovat 60-70 välillä"),
                   ((longitude == ""), "Pituuspiiri ei voi olla tyhjä"),
                   ((not 22 < float(longitude) < 31), "Suomen pituuspiirit ovat 22-31 välillä"),
-                  ((len(description) > 500), "Ravintolan esittely on liian pitkä"),
-                  ((not restaurants.add_restaurant(restaurant_name,
-                                                   latitude,
-                                                   longitude,
-                                                   description)),
-                                                   "Tallennus ei onnistunut"),]
+                  ((len(description) > 500), "Ravintolan esittely on liian pitkä"),]
 
         for err in errors:
             if err[0] is True:
                 flash(err[1], "error")
                 return redirect(url_for("add_restaurant"))
+ 
+        try:
+            restaurants.add_restaurant(restaurant_name, latitude, longitude, description)
+        except:
+            flash("Tallennus ei onnistunut", "error")
+            return redirect(url_for("add_restaurant"))
 
         flash("Tallennus onnistui", "message")
         return redirect(url_for("admin"))
@@ -196,11 +207,11 @@ def manage_groups():
                 found_restaurants = restaurants.get_restaurants_in_group_order_by_name(group_id)
                 not_in_group_restaurants = restaurants.get_restaurants_not_in_group(group_id)
                 return render_template("manage-groups.html",
-                                    dropdown=dropdown,
-                                    unvisible=unvisible,
-                                    found_restaurants=found_restaurants,
-                                    not_in_group_restaurants=not_in_group_restaurants,
-                                    group_id=group_id)
+                                       dropdown=dropdown,
+                                       unvisible=unvisible,
+                                       found_restaurants=found_restaurants,
+                                       not_in_group_restaurants=not_in_group_restaurants,
+                                       group_id=group_id)
 
             case "Poista ryhmä":
                 group_id = request.form.get("select_group")
