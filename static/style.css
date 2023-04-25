@@ -32,7 +32,7 @@ nav, footer {
 }
 
 .headerbutton {
-    margin: 2em;
+    margin: .3em;
 }
 
 .headerbutton:hover, .footerbutton:hover, .contentbutton:hover, #basic-button:hover {
