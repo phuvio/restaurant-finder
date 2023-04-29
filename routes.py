@@ -158,7 +158,7 @@ def add_restaurant():
         try:
             float(longitude)
         except (ValueError, TypeError):
-            flash("Pituuspiiriin pitää olla numero")
+            flash("Pituuspiiriin pitää olla numero", "error")
             return redirect(url_for("add_restaurant"))
         description = request.form["description"]
 
