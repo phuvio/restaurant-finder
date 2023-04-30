@@ -2,12 +2,40 @@
 <head>
     <link rel="stylesheet" href="/static/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="#">
     <title>Etsi ravintola</title>
 
-    {% if mymap %}
-        {{"decoupled-map"|googlemap_js(37.4419, -122.1419)}} {{mymap.js}}
-    {% endif %}
+    {% if locations %}
+        <script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLEMAPS_KEY }}&callback=initMap" defer></script>
+        <script>
+            function initMap() {
+                const map = new google.maps.Map(document.getElementById("map"), {
+                    zoom: 13,
+                    center: {lat: 60.169857, lng: 24.938379}
+                });
 
+                {% for location in locations %}
+                    const marker{{ loop.index }} = new google.maps.Marker({
+                        position: {lat: {{ location.lat }}, lng: {{ location.lng }}},
+                        map: map,
+                        title: '{{ location.label }}',
+                    });
+                    const infowindow{{ loop.index }} = new google.maps.InfoWindow({
+                        content: '{{ location.infobox | safe }}'
+                    });
+                    marker{{ loop.index }}.addListener('click', function() {
+                        closeAllInfoWindows();
+                        infowindow{{ loop.index }}.open(map, marker{{ loop.index }});
+                    });
+                    function closeAllInfoWindows() {
+                        {% for location in locations %}
+                                infowindow{{ loop.index }}.close();
+                        {% endfor %}
+                    }
+                {% endfor %}
+            };
+        </script>
+    {% endif %}
 </head>
 <div id="wrapperHead">
     <div id="Header">
@@ -21,7 +49,7 @@
 <hr>
 <nav>
     {% if session.user_id %}
-        Sisäänkirjautuneena: <b>{{ session.user_username }}</b>. 
+        Sisäänkirjautuneena: <b>{{ session.user_username }}</b>
         <a href="/logout" class="headerbutton">Kirjaudu ulos</a>
         {% if session.user_role == 0 %}
             <a href="/admin" class="headerbutton">Ylläpito</a>

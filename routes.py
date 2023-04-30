@@ -4,7 +4,6 @@ import restaurants
 import groups
 import comments
 import users
-import googlemap
 
 
 @app.route("/")
@@ -13,13 +12,29 @@ def index():
 
 @app.route("/restaurants", methods=["GET", "POST"])
 def show_restaurants():
-    mymap = googlemap.create_map()
+    all_restaurants = restaurants.get_all_restaurants()
+
+    locations = []
+
+    for restaurant in all_restaurants:
+        marker = {}
+        marker["lat"] = restaurant.latitude
+        marker["lng"] = restaurant.longitude
+        marker["label"] = restaurant.name
+        if restaurant.avg_stars:
+            link = str(restaurant.avg_stars) + " <a href=/restaurant/" \
+                 + str(restaurant.id) + ">" + restaurant.name + "</a>"
+        else:
+            link = "<a href=/restaurant/" + str(restaurant.id) + ">" + restaurant.name + "</a>"
+        marker["infobox"] = link
+        locations.append(marker)
+
     dropdown = groups.get_all_groups()
 
     if request.method == "GET":
         return render_template("restaurants.html",
                                dropdown=dropdown,
-                               mymap=mymap)
+                               locations=locations)
 
     if request.method == "POST":
         if request.form["action"] == "Hae ryhmää":
@@ -45,7 +60,7 @@ def show_restaurants():
         return render_template("restaurants.html",
                             found_restaurants=found_restaurants,
                             dropdown=dropdown,
-                            mymap=mymap)
+                            locations=locations)
 
 @app.route("/restaurant/<int:res_id>", methods=["GET", "POST"])
 def restaurant(res_id):
@@ -374,7 +389,7 @@ def manage_restaurant(id):
 
     id, name, avg_stars, descr, latitude, longitude = restaurants.get_restaurant_basic_info(id)
     information = restaurants.get_restaurant_extra_info(id)
-    restaurant_comments = restaurants.get_restaurant_comments(id)
+    restaurant_comments = restaurants.get_all_restaurant_comments(id)
 
     if request.method == "GET":
         return render_template("manage-restaurant.html",

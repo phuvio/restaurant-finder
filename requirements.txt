@@ -9,7 +9,7 @@ dill==0.3.6
 distlib==0.3.6
 filelock==3.10.7
 Flask==2.2.3
-flask-googlemaps @ file:///home/pehuvio/Downloads/Flask-GoogleMaps-0.4.1.1
+flask-googlemaps==0.4.1
 Flask-SQLAlchemy==3.0.3
 ghp-import==2.1.0
 greenlet==2.0.2
@@ -34,7 +34,6 @@ nodeenv==1.7.0
 packaging==23.0
 platformdirs==3.2.0
 pre-commit==1.21.0
-psycopg2==2.9.6
 psycopg2-binary==2.9.5
 pycodestyle==2.10.0
 Pygments==2.14.0

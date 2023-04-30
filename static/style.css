@@ -67,8 +67,8 @@ nav, footer {
  } 
 
 .google-map {
-    max-width: 600px;
-    max-height: 400px;
+    height: 400px;
+    width: 100%;
     margin: 10px;
 }
 

@@ -1,10 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 
-    <div class="google-map">
-        {% if mymap %}
-            {{ mymap.html }}
-        {% endif %}
+    <div class="google-map" id="map" style="height:400px;width:600px;margin:0;" onload="initMap()">
     </div>
     
     <h2>Hae ravintolaa hakusanalla</h2>

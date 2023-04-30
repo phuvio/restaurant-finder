@@ -35,6 +35,14 @@ def get_restaurant_comments(restaurant_id):
                   LIMIT 10""")
     return db.session.execute(sql, {"restaurant_id":restaurant_id}).fetchall()
 
+def get_all_restaurant_comments(restaurant_id):
+    sql = text("""SELECT C.id AS comment_id, C.stars, C.comment, U.username AS username
+                  FROM comments C
+                  LEFT JOIN users U ON C.user_id=U.id
+                  WHERE C.restaurant_id=:restaurant_id
+                  ORDER BY C.id DESC""")
+    return db.session.execute(sql, {"restaurant_id":restaurant_id}).fetchall()
+
 def get_restaurant_basic_info(restaurant_id):
     sql = text("""SELECT R.id, R.name, AVG(C.stars)::numeric(10,1) AS avg_stars, R.description,
                   R.latitude, R.longitude
