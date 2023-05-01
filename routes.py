@@ -1,3 +1,4 @@
+import os
 from flask import render_template, request, redirect, url_for, flash
 from app import app
 import restaurants
@@ -13,6 +14,7 @@ def index():
 @app.route("/restaurants", methods=["GET", "POST"])
 def show_restaurants():
     all_restaurants = restaurants.get_all_restaurants()
+    api_key = os.getenv('GOOGLEMAPS_KEY')
 
     locations = []
 
@@ -34,7 +36,8 @@ def show_restaurants():
     if request.method == "GET":
         return render_template("restaurants.html",
                                dropdown=dropdown,
-                               locations=locations)
+                               locations=locations,
+                               api_key=api_key)
 
     if request.method == "POST":
         if request.form["action"] == "Hae ryhmää":
@@ -60,7 +63,8 @@ def show_restaurants():
         return render_template("restaurants.html",
                             found_restaurants=found_restaurants,
                             dropdown=dropdown,
-                            locations=locations)
+                            locations=locations,
+                            api_key=api_key)
 
 @app.route("/restaurant/<int:res_id>", methods=["GET", "POST"])
 def restaurant(res_id):
@@ -189,7 +193,7 @@ def add_restaurant():
             if err[0] is True:
                 flash(err[1], "error")
                 return redirect(url_for("add_restaurant"))
- 
+
         try:
             restaurants.add_restaurant(restaurant_name, latitude, longitude, description)
         except:

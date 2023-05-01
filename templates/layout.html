@@ -6,7 +6,7 @@
     <title>Etsi ravintola</title>
 
     {% if locations %}
-        <script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLEMAPS_KEY }}&callback=initMap" defer></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&callback=initMap" defer></script>
         <script>
             function initMap() {
                 const map = new google.maps.Map(document.getElementById("map"), {
